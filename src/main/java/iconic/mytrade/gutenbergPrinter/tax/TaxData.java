@@ -70,7 +70,7 @@ public class TaxData {
 		}
 	}
 	
-	public static int getBeni() {
+	static int getBeni() {
 		return BENI;
 	}
 

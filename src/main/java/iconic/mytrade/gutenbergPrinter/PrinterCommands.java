@@ -36,7 +36,6 @@ import iconic.mytrade.gutenberg.jpos.printer.service.RTRounding;
 import iconic.mytrade.gutenberg.jpos.printer.service.RTTxnType;
 import iconic.mytrade.gutenberg.jpos.printer.service.SetVoidTrx;
 import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
-import iconic.mytrade.gutenberg.jpos.printer.service.TakeYourTime;
 import iconic.mytrade.gutenberg.jpos.printer.service.TicketErrorSupport;
 import iconic.mytrade.gutenberg.jpos.printer.service.TransactionSale;
 import iconic.mytrade.gutenberg.jpos.printer.service.TxnHeader;

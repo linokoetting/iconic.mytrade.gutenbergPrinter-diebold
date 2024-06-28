@@ -1,23 +1,12 @@
 package iconic.mytrade.gutenbergPrinter.lottery;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import iconic.mytrade.gutenberg.jpos.printer.service.PosApp;
-import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
-import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
-import iconic.mytrade.gutenberg.jpos.printer.srt.RTConsts;
-import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;
-import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
-import jpos.FiscalPrinterConst;
 
 public class LotteryReportCommands extends PrinterCommands {
 	
@@ -26,13 +15,13 @@ public class LotteryReportCommands extends PrinterCommands {
 		return;
 	}
 	
-	public LotteryStatus ReadLotteryStatus(int requesttype, String till, String date, int repz) {
+	private LotteryStatus ReadLotteryStatus(int requesttype, String till, String date, int repz) {
 		LotteryStatus status = null;
 		
 		return status;
 	}
 	
-	public LotteryReceiptStatus ReadLotteryReceiptStatus(String till, int repz, int recnum, String date, int type) {
+	private LotteryReceiptStatus ReadLotteryReceiptStatus(String till, int repz, int recnum, String date, int type) {
 		LotteryReceiptStatus status = null;
 		
 		return status;
