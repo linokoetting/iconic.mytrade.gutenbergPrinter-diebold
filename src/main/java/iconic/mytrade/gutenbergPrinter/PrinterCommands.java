@@ -22,6 +22,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
+import iconic.mytrade.gutenberg.jpos.printer.service.Cancello;
 import iconic.mytrade.gutenberg.jpos.printer.service.CarteFidelity;
 import iconic.mytrade.gutenberg.jpos.printer.service.Company;
 import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
@@ -506,6 +507,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	private void printNormal_ejoff(int i, String s) throws JposException
 	{
+		if (s.contains(Cancello.getTag()+R3define.CrLf)) {
+			String s1 = s.replaceAll(Cancello.getTag()+R3define.CrLf, "");
+			s = s1;
+			if (s.length() == 0)
+				return;
+		}
+		
 		System.out.println("MAPOTO-EXEC PRINT NORMAL "+s);
 		
 		if (isLNFMAndSRTModel())
@@ -1003,6 +1011,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	}
 
 	public void printRecMessage(String arg0) throws JposException {
+		if (arg0.equalsIgnoreCase(Cancello.getTag()))
+			return;
+		
 		System.out.println ( "MAPOTO-EXEC PRINT MESSAGE "+arg0+" staticMsgLen=<"+staticMsgLen+">" );
 		
 		if (isLNFMAndSRTModel())
