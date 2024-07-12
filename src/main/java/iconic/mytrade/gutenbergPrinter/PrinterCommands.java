@@ -51,6 +51,7 @@ import iconic.mytrade.gutenberg.jpos.printer.srt.DummyServerRT;
 import iconic.mytrade.gutenberg.jpos.printer.srt.RTConsts;
 import iconic.mytrade.gutenberg.jpos.printer.srt.Xml4SRT;
 import iconic.mytrade.gutenberg.jpos.printer.utils.BasicDicoData;
+import iconic.mytrade.gutenberg.jpos.printer.utils.Checksum;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Files;
 import iconic.mytrade.gutenberg.jpos.printer.utils.LocalTimestamp;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Rounding;
@@ -1011,8 +1012,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	}
 
 	public void printRecMessage(String arg0) throws JposException {
-		if (arg0.equalsIgnoreCase(Cancello.getTag()))
+		if (arg0.equalsIgnoreCase(Cancello.getTag())) {
 			return;
+		}
 		
 		System.out.println ( "MAPOTO-EXEC PRINT MESSAGE "+arg0+" staticMsgLen=<"+staticMsgLen+">" );
 		
@@ -4363,6 +4365,83 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			System.out.println("RT2 - enableLowerRoundedPay - ret = "+ret);
 			return ret;
+		}
+
+		public void printBarcode(String bc) {
+			int[] data = new int[25];
+
+			System.out.println ( "MAPOTO-EXEC PRINT BARCODE "+bc );
+				
+			int l13 = bc.length()-R3define.getBARCODEHEADEREAN13().length();
+			int l128 = bc.length()-R3define.getBARCODEHEADEREAN128().length();
+			int lqrc = bc.length()-R3define.getQRCODEHEADER().length();
+			int a = l13 -12;
+			
+			if (SRTPrinterExtension.isPRT())
+			{
+				String barcode = "";
+                int[] mydata = {0};
+                
+				if (bc.startsWith(R3define.getBARCODEHEADEREAN13()))
+				{
+			    	barcode = bc.substring(bc.length()-l13);
+					barcode = Checksum.makeEANCheck(barcode);
+                    mydata[0] = 2;
+				}
+				else if (bc.startsWith(R3define.getBARCODEHEADEREAN128()))
+				{
+			    	barcode = bc.substring(bc.length()-l128);
+                    mydata[0] = 8;
+				}
+				else if (bc.startsWith(R3define.getQRCODEHEADER()))
+				{
+			    	barcode = bc.substring(bc.length()-lqrc);
+                    mydata[0] = 11;
+				}
+				try {
+					this.directIO(5000, mydata, barcode);
+				} catch (JposException e) {
+					System.out.println("printBarcode - exception: "+e.getMessage());
+				}
+			}
+			else
+			{
+/*				="/$2/(4006381333641)         -> stampa codice a barre EAN-13
+				="/$1/(02345678901)           -> stampa codice a barre UPC-E 
+				="/$3/(80369691)              -> stampa codice a barre EAN-8
+				="/$4/(ABCDEFGH)              -> stampa codice a barre CODE-39
+				="/$5/(042110000082)          -> stampa codice a barre UPC-A
+				="/$6/(012345678902)          -> stampa codice a barre ITF
+				="/$7/(0123456)               -> stampa codice a barre CODABAR 
+				="/$8/(ABCDEFGHILMN)          -> stampa codice a barre CODE-128
+				="/$9/(ABCDEFGH)              -> stampa codice a barre CODE-93
+				="/$10/(12345678901)          -> conversione barcode UPC-E in UPC-A 
+				="/$11/(abc123)               -> stampa codice QR (max. 45 caratteri)*/
+                try {
+                    int cmdInt = 1;
+                    int[] mydata = {1};
+                    String cmd = "";
+					if (bc.startsWith(R3define.getBARCODEHEADEREAN13()))
+					{
+				    	String barcode = bc.substring(bc.length()-l13);
+						barcode = Checksum.makeEANCheck(barcode);
+						cmd = "=\"/$2/("+barcode+")";
+					}
+					else if (bc.startsWith(R3define.getBARCODEHEADEREAN128()))
+					{
+				    	String barcode = bc.substring(bc.length()-l128);
+						cmd = "=\"/$8/("+barcode+")";
+					}
+					else if (bc.startsWith(R3define.getQRCODEHEADER()))
+					{
+				    	String barcode = bc.substring(bc.length()-lqrc);
+						cmd = "=\"/$11/("+barcode+")";
+					}
+                    this.directIO(cmdInt, mydata, cmd);
+				} catch (JposException e) {
+					System.out.println("printBarcode - exception: "+e.getMessage());
+				}
+			}
 		}
 
 }

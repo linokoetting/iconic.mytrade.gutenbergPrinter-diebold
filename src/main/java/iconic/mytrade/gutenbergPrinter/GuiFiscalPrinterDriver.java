@@ -1344,6 +1344,15 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 		((StringBuffer)arg2).append("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
 	}
 
+	public void directIO(int arg0, int[] arg1, String[] arg2) throws JposException {
+		if(PrinterGUI.isWindowOpen(PrinterGUI.getFrame()) == false) {
+			PrinterGUI.createWindow();			
+		}
+		
+		PrinterGUI.addText("-- directIO --"+arg0+"--"+arg1[0]+"--"+arg2[0]);
+		arg2[0]=arg2[0]+"1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+	}
+
 	public String getCheckHealthText() throws JposException {
 		// TODO Auto-generated method stub
 		return null;
@@ -1447,6 +1456,8 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 			((StringBuffer)bjct).append("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
 		else if (Command == 9218)
 			((StringBuffer)bjct).setLength(1);
+		else if (Command == 4237)
+			((StringBuffer)bjct).append("123456789012345678901");
 		else
 			((StringBuffer)bjct).append("12345678");
 		
