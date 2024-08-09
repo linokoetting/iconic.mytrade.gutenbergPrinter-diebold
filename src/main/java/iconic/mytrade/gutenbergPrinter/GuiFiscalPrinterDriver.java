@@ -1335,13 +1335,21 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 		PrinterGUI.addText("-- close --");	
 	}
 
+	public void directIO(int arg0, int[] arg1, StringBuffer arg2) throws JposException {
+		if(PrinterGUI.isWindowOpen(PrinterGUI.getFrame()) == false) {
+			PrinterGUI.createWindow();			
+		}
+		
+		PrinterGUI.addText("-- directIO --"+arg0+"--"+arg1[0]+"--"+arg2);
+		arg2.append("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
+	}
+
 	public void directIO(int arg0, int[] arg1, Object arg2) throws JposException {
 		if(PrinterGUI.isWindowOpen(PrinterGUI.getFrame()) == false) {
 			PrinterGUI.createWindow();			
 		}
 		
 		PrinterGUI.addText("-- directIO --"+arg0+"--"+arg1[0]+"--"+arg2);
-		((StringBuffer)arg2).append("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
 	}
 
 	public void directIO(int arg0, int[] arg1, String[] arg2) throws JposException {
@@ -1351,6 +1359,15 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 		
 		PrinterGUI.addText("-- directIO --"+arg0+"--"+arg1[0]+"--"+arg2[0]);
 		arg2[0]=arg2[0]+"1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+	}
+
+	public void directIO(int arg0, int[] arg1, String arg2) throws JposException {
+		if(PrinterGUI.isWindowOpen(PrinterGUI.getFrame()) == false) {
+			PrinterGUI.createWindow();			
+		}
+		
+		PrinterGUI.addText("-- directIO --"+arg0+"--"+arg1[0]+"--"+arg2);
+		arg2=arg2+"1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
 	}
 
 	public String getCheckHealthText() throws JposException {
