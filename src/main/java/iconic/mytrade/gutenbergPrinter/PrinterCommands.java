@@ -602,6 +602,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		{
             if ((int)(newdes.charAt(k2idx)) >= 128)
                 k2desc = k2desc + ".";
+            else if ((int)(newdes.charAt(k2idx)) < 32)
+                k2desc = k2desc + " ";
             else
                 k2desc = k2desc + newdes.charAt(k2idx);
 		}
@@ -1218,6 +1220,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		{
 	        if ((int)(newdes.charAt(k2idx)) >= 128)
 	            k2desc = k2desc + ".";
+            else if ((int)(newdes.charAt(k2idx)) < 32)
+                k2desc = k2desc + " ";
 	        else
 	            k2desc = k2desc + newdes.charAt(k2idx);
 		}
