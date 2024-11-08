@@ -94,6 +94,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	static String OPERAZIONEANNULLATA = "OPERAZIONE ANNULLATA";
 	static String RESONONCORRETTO = "PREZZO NON CORRETTO ";
+    static String RESOANNULLATO = "<Void>          --------- SCONTRINO ANNULLATO --------- "+OPERAZIONEANNULLATA;
 
     private static String barcodePrefix = "VAR";
 	private String CF = "C.F. Cliente ";
@@ -2395,8 +2396,18 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			MessageBox.showMessage(RESONONCORRETTO, null, MessageBox.OK);
 		
 		try {
-			printRecVoid(OPERAZIONEANNULLATA);
-			endFiscalReceipt(true);
+			int state = getFiscalPrinterState();
+			if (state == jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT_ENDING) {
+				resetPrinter();
+				RTTxnType.setSaleTrx();
+				setMonitorState();
+//				setCanPost(true);	// ???
+	            ForFiscalEJFile.writeToFile(RESOANNULLATO);
+			}
+			else {
+				printRecVoid(OPERAZIONEANNULLATA);
+				endFiscalReceipt(true);
+			}
 		} catch (JposException e) {
 			System.out.println("AnnullaResoRT_Posponed - Exception : " + e.getMessage());
 		}
