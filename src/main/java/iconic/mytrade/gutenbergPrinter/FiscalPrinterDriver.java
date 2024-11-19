@@ -1137,7 +1137,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	{
 		System.out.println("RT2 - setFidelityOption - mode = "+mode);
 		
-		StringBuffer sbcmd = new StringBuffer("C933"+mode+"00000"+"0000000000000000000000000000000000"+"00");
+		StringBuffer sbcmd = new StringBuffer(">C933/$"+mode);
 		this.executeRTDirectIo(0, 0, sbcmd);
 	}
 		
