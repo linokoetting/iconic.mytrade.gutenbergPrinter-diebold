@@ -20,7 +20,7 @@ public class VatCommands extends PrinterCommands {
 			return;
 		}
 		
-		System.out.println("EPSON - setVatValue("+Integer.parseInt(taxnumber)+","+vatrate+")");
+		System.out.println("SetVatValue - setVatValue("+Integer.parseInt(taxnumber)+","+vatrate+")");
 		fiscalPrinterDriver.setVatValue(Integer.parseInt(taxnumber), vatrate);
 	}
 	
