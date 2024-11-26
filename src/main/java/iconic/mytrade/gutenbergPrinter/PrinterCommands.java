@@ -1482,6 +1482,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				arg2 = LoadMops.getRCHPrefixPayment(SharedPrinterFields.ChangeCurrency);
 				System.out.println ( "MAPOTO before driver.printRecTotal arg2="+arg2);
 	        	fiscalPrinterDriver.printRecTotal(arg0, arg1, arg2);
+				System.out.println ( "MAPOTO after driver.printRecTotal");
 	        	
 	        	try {
 					// scrittura file lastticket
