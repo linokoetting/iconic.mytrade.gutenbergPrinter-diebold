@@ -10,6 +10,15 @@
     <printer.version>93.0.1-SNAPSHOT</printer.version>
   </properties>  
   
+  <build>
+  	<resources>
+  		<resource>
+  			<directory>src/main/resources</directory>
+  			<filtering>true</filtering>
+  		</resource>
+  	</resources>
+  </build>
+   
   <dependencies>     
 		
 		
