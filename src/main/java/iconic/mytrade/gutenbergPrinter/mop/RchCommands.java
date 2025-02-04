@@ -63,7 +63,11 @@ public class RchCommands extends PrinterCommands {
 								isContanti = true;
 							}
 							if (typeIndex == LoadMops.NOPAY1_TYPE){
-								NonRiscosso = 1;
+//								Gli assegni sono riscossi eccome.
+//								Se lo metti come non riscosso, va specificato se non riscosso “beni” o non riscosso “servizi” e di default è non riscosso beni, quindi non lo puoi usare con i servizi.
+//								E’ errato comunque classificare non riscosso il pagamento assegni, in quanto equivalgono a contanti.
+								//NonRiscosso = 1;
+								sommaACassa = 1;
 							}
 							if (typeIndex == LoadMops.EFT_TYPE){
 							}
