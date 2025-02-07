@@ -2460,18 +2460,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			MessageBox.showMessage(RESONONCORRETTO, null, MessageBox.OK);
 		
 		try {
-			int state = getFiscalPrinterState();
-			if (state == jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT_ENDING) {
-				resetPrinter();
-				RTTxnType.setSaleTrx();
-				setMonitorState();
-//				setCanPost(true);	// ???
-	            ForFiscalEJFile.writeToFile(RESOANNULLATO);
-			}
-			else {
-				printRecVoid(OPERAZIONEANNULLATA);
-				endFiscalReceipt(true);
-			}
+			resetAndClear();
+			RTTxnType.setSaleTrx();
+			setMonitorState();
+//			setCanPost(true);	// ???
+            ForFiscalEJFile.writeToFile(RESOANNULLATO);
 		} catch (JposException e) {
 			System.out.println("AnnullaResoRT_Posponed - Exception : " + e.getMessage());
 		}
