@@ -87,7 +87,7 @@ public class Report extends PrinterCommands {
 				case PRINTTOTFISCALMEMBYDATE:
 					try
 					{
-						printPeriodicTotalsReport(startNum, endNum);
+						PrinterCommands.printPeriodicTotalsReport(startNum, endNum);
 					}
 					catch (JposException jpe)
 					{
@@ -358,9 +358,9 @@ public class Report extends PrinterCommands {
 		return ret;
     }
     
-	private static void printPeriodicTotalsReport(String ini,String end ) throws JposException
-	{
-		fiscalPrinterDriver.printPeriodicTotalsReport(ini,end);
-	}
+//	public static void printPeriodicTotalsReport(String ini,String end ) throws JposException
+//	{
+//		fiscalPrinterDriver.printPeriodicTotalsReport(ini,end);
+//	}
 	
 }
