@@ -48,6 +48,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.properties.MyTradePropertie
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PaperSavingProperties;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
+import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.RoungickTax;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.VatInOutHandling;
 import iconic.mytrade.gutenberg.jpos.printer.srt.DummyServerRT;
@@ -2285,7 +2286,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		 return getFiscalPrinterState();
 	}
 	
-	public boolean getCoverOpen()
+	public static boolean getCoverOpen()
 	{
 		boolean retv = false;
 		try
@@ -2299,7 +2300,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return retv;
 	}
 	
-	public boolean getJrnEmpty()
+	public static boolean getJrnEmpty()
 	{
 		boolean retv = false;
 		try
@@ -2313,7 +2314,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return retv;
 	}
 	
-	public boolean getJrnNearEnd()
+	public static boolean getJrnNearEnd()
 	{
 		boolean retv = false;
 		try
@@ -2327,7 +2328,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return retv;
 	}
 	
-	public boolean getRecEmpty()
+	public static boolean getRecEmpty()
 	{
 		boolean retv = false;
 		try
@@ -2341,7 +2342,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return retv;
 	}
 	
-	private boolean getRecNearEnd()
+	public static boolean getRecNearEnd()
 	{
 		boolean retv = false;
 		try
@@ -4605,6 +4606,61 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		public void printFiscalDocumentLine(String documentLine) throws JposException {
 			fiscalPrinterDriver.printFiscalDocumentLine(documentLine);
+		}
+		
+		public void SMTKreadProperties()
+		{
+			SmartTicket.setSmart_Ticket(SmartTicketProperties.isSmartTicket());
+			SmartTicket.setBase64_Ticket(SmartTicketProperties.isBase64Ticket());
+			SmartTicket.Base64_Decode = SmartTicketProperties.getBase64Decode();
+			SmartTicket._Smart_Ticket_ReceiptMode = SmartTicketProperties.getSmartTicketMode();
+			
+			System.out.println("Open - SmartTicket = "+SmartTicketProperties.isSmartTicket());
+			System.out.println("Open - ServerUrl = "+SmartTicketProperties.getServerUrl());
+			System.out.println("Open - SmartTicketMode = "+SmartTicketProperties.getSmartTicketMode());
+			System.out.println("Open - Base64Ticket = "+SmartTicketProperties.isBase64Ticket());
+			System.out.println("Open - Base64Decode = "+SmartTicketProperties.getBase64Decode());
+			
+			if (SRTPrinterExtension.isPRT()) {
+		    	SmartTicket.setSmart_Ticket(SmartTicket.isSmart_Ticket() && fiscalPrinterDriver.isfwSMTKenabled());
+				System.out.println("SMTK - SmartTicket : "+SmartTicket.isSmart_Ticket());
+			}
+			
+		    if (SmartTicket.isSmart_Ticket())
+		    {
+		    	SmartTicket.Smart_Ticket_Mode = SmartTicketProperties.getServerUrl();
+				System.out.println("SMTK - ServerUrl : "+SmartTicket.Smart_Ticket_Mode);
+		    	if (SmartTicket.Smart_Ticket_Mode.equalsIgnoreCase("OFF"))
+		    		SmartTicket.Smart_Ticket_Mode = SmartTicket.ERECEIPT_URL_SERVER_DISABLE;
+		    	else if (SmartTicket.Smart_Ticket_Mode.equalsIgnoreCase("PULL"))
+		    		SmartTicket.Smart_Ticket_Mode = SmartTicket.ERECEIPT_URL_SERVER_PULL;
+		    	
+		    	if (SmartTicket.Smart_Ticket_Mode.equalsIgnoreCase(SmartTicket.ERECEIPT_URL_SERVER_DISABLE)) {
+		    		SmartTicket.setSmart_Ticket(false);
+		    		SmartTicket.Smart_Ticket_ReceiptMode = SmartTicket.ERECEIPT_PAPER;
+		    		SmartTicket.Smart_Ticket_Validity = SmartTicket.ERECEIPT_VALIDITY_ALL;
+		    	}
+		    	else {
+		    		// Default setting
+		    		SmartTicket.Smart_Ticket_ReceiptMode = SmartTicket._Smart_Ticket_ReceiptMode;
+		    		SmartTicket.Smart_Ticket_Validity = SmartTicket.ERECEIPT_VALIDITY_ALL;
+		    	}
+	    		
+		    	SmartTicket.SMTKsaveDefault();
+	    		
+				if (SRTPrinterExtension.isPRT()) {
+		    		fiscalPrinterDriver.SMTKsetServerUrl(SmartTicket.Smart_Ticket_Mode);
+		    		fiscalPrinterDriver.SMTKsetReceiptType(SmartTicket.Smart_Ticket_ReceiptMode, SmartTicket.Smart_Ticket_Validity);
+		    		fiscalPrinterDriver.SMTKsetCustomerID(SmartTicket.Smart_Ticket_CustomerType, SmartTicket.Smart_Ticket_CustomerId);
+		    		fiscalPrinterDriver.SMTKStatus();
+		    	}
+		    }
+		    else
+		    {
+		    	// se ci  fosse già il fw per smart ticket disabilito tutto
+	    		fiscalPrinterDriver.SMTKsetServerUrl(SmartTicket.ERECEIPT_URL_SERVER_DISABLE);
+	    		fiscalPrinterDriver.SMTKsetReceiptType(SmartTicket.ERECEIPT_PAPER, SmartTicket.ERECEIPT_VALIDITY_ALL);
+		    }
 		}
 		
 }
