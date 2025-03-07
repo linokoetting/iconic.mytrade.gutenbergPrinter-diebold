@@ -989,6 +989,11 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 		return false;
 	}
 
+	public boolean getSlipNearEnd() throws JposException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	public int getRemainingFiscalMemory() throws JposException {
 		// TODO Auto-generated method stub
 		return 0;
@@ -1482,5 +1487,9 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
         System.out.println("getRTSettings - reply = " + reply);
         return reply;
     }
+
+	public String checkEJStatus() {
+		return "0";
+	}
     
 }

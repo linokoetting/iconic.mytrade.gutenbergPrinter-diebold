@@ -1757,7 +1757,13 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	}
 
 	public boolean getRecNearEnd() throws JposException {
+		if (!getCapRecNearEndSensor())
+			return false;
 		return fiscalPrinter.getRecNearEnd();
+	}
+
+	public boolean getSlipNearEnd() throws JposException {
+		return false;
 	}
 
 	public int getRemainingFiscalMemory() throws JposException {
@@ -2537,6 +2543,41 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 			   System.out.println("Reprinting ticket: "+e.getMessage());
 			   MessageBox.showMessage(e.getMessage(), null, MessageBox.OK);
 		   }
+	   }
+	   
+	   String checkEJStatus()
+	   {
+		   String reply = "";
+			   
+		   int cmdInt = 0;
+		   int[] mydata = {0};
+		   String cmd = "<</?g";
+		        
+		   DirectIOListener p=new DirectIOListener();
+		   fiscalPrinter.addDirectIOListener((jpos.events.DirectIOListener) p);
+			   
+		   try {
+			   p.started = true;
+			   p.buffer="";
+					
+			   fiscalPrinter.directIO(cmdInt, mydata, cmd);
+			   while (p.started) {
+				   try {
+					   Thread.sleep(500);
+				   } catch (InterruptedException e) {
+				   }
+			   }
+					
+			   System.out.println("checkEJStatus - result : "+p.buffer);
+			   reply = p.buffer;
+					
+		   } catch (JposException e) {
+			   System.out.println("checkEJStatus - Exception : " + e.getMessage());
+		   }
+		        
+		   fiscalPrinter.removeDirectIOListener(p);
+			   
+		   return reply;
 	   }
 
 }

@@ -2355,6 +2355,20 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return retv;
 	}
 	
+	public boolean getSlipNearEnd()
+	{
+		boolean retv = false;
+		try
+		{
+			retv = fiscalPrinterDriver.getSlipNearEnd();
+		}
+		catch (jpos.JposException e)
+		{
+			System.out.println("getSlipNearEnd - exception:"+e.getMessage());
+		}
+		return retv;
+	}
+	
 	protected static void getDate(String[] arg0) throws JposException {
 		try
 		{
@@ -2375,6 +2389,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
      * 
      */
 	
+	public static String checkEJStatus()
+	{
+		return fiscalPrinterDriver.checkEJStatus();
+	}
+	   
     private String buildItem ( String desc, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
