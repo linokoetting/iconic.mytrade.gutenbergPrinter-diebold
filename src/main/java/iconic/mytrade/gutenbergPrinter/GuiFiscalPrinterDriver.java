@@ -9,6 +9,7 @@ import rtsTrxBuilder.hardTotals.HardTotals;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
+import iconic.mytrade.gutenberg.jpos.printer.utils.String13Fix;
 import iconic.mytrade.gutenbergGuiPrinter.PrinterGUI;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
 import jpos.JposException;
@@ -182,21 +183,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //			}
 //		}
         
-//        String oldS = as[0];
-//        String newS = "";
-//		for ( int j = 0 ; j < oldS.length(); j++ )
-//		{
-//	    	  if (((oldS.charAt(j) >= (char)48) && (oldS.charAt(j) <= (char)57)) || (oldS.charAt(j) == (char)46))
-//	    	  {
-//	    		  // è un numero o un punto
-//	    		  newS = newS + oldS.charAt(j);
-//	    	  }
-//	    	  else if (oldS.charAt(j) == (char)44)
-//	    	  {
-//	    		  // è una virgola
-//	    		  newS = newS + (char)46;
-//	    	  }
-//		}
+//        String newS = String13Fix.cleandoublestr(as[0]);
 //		as[0] = newS;
 		
 //	    if (PrinterType.isEpsonModel()) {
@@ -1492,4 +1479,8 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 		return "0";
 	}
     
+	public void fwUpdate()
+	{
+	}
+	
 }

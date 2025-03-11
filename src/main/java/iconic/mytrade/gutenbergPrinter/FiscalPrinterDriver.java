@@ -357,21 +357,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 
         PrinterInfo.SavePrinterInfo("FW", as[0]);
         
-        String oldS = as[0];
-        String newS = "";
-		for ( int j = 0 ; j < oldS.length(); j++ )
-		{
-	    	  if (((oldS.charAt(j) >= (char)48) && (oldS.charAt(j) <= (char)57)) || (oldS.charAt(j) == (char)46))
-	    	  {
-	    		  // è un numero o un punto
-	    		  newS = newS + oldS.charAt(j);
-	    	  }
-	    	  else if (oldS.charAt(j) == (char)44)
-	    	  {
-	    		  // è una virgola
-	    		  newS = newS + (char)46;
-	    	  }
-		}
+        String newS = String13Fix.cleandoublestr(as[0]);
 		as[0] = newS;
 		
     	fw = Double.parseDouble((as[0].substring(0, as[0].lastIndexOf((int)'.'))).trim());
@@ -2580,4 +2566,8 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		   return reply;
 	   }
 
+	   public void fwUpdate()
+	   {
+	   }
+		
 }
