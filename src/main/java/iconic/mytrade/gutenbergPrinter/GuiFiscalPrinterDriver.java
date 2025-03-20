@@ -1,5 +1,9 @@
 package iconic.mytrade.gutenbergPrinter;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.GregorianCalendar;
 
 import iconic.mytrade.gutenberg.jpos.linedisplay.service.OperatorDisplay;
@@ -1483,4 +1487,8 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 	{
 	}
 	
+	public void bitmap(String filename,int width,int height,int align) //throws PrinterException
+	{
+	}
+	   
 }

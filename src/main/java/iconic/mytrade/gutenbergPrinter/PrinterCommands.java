@@ -137,10 +137,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	private static final String	R3_DELETELASTTICKET_R3 = "R3_NEWCMD01_R3";
 	
-	static String OPERAZIONEANNULLATA = "OPERAZIONE ANNULLATA";
-	static String RESONONCORRETTO = "PREZZO NON CORRETTO ";
-    static String RESOANNULLATO = "<Void>          --------- SCONTRINO ANNULLATO --------- "+OPERAZIONEANNULLATA;
-
 	private String CF = "C.F. Cliente ";
 	private String PI = "P.IVA. Cliente ";
 	private int CFLEN = 16;
@@ -2572,14 +2568,14 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	public void AnnullaResoRT_Posponed()
 	{
 		if (!isFlagsVoidTicket())
-			MessageBox.showMessage(RESONONCORRETTO, null, MessageBox.OK);
+			MessageBox.showMessage(RTConsts.RESONONCORRETTO, null, MessageBox.OK);
 		
 		try {
 			resetAndClear();
 			RTTxnType.setSaleTrx();
 			setMonitorState();
 //			setCanPost(true);	// ???
-            ForFiscalEJFile.writeToFile(RESOANNULLATO);
+            ForFiscalEJFile.writeToFile(RTConsts.RESOANNULLATO);
 		} catch (JposException e) {
 			System.out.println("AnnullaResoRT_Posponed - Exception : " + e.getMessage());
 		}
@@ -2587,7 +2583,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 //		setTxnnumbertorefund(LineRefundSRT.getTxnnumbertorefund());	// ??? non dovrebbe più servire visto che setVoided() sulla transazione non si farà più da qui immagino
 		
 		if (!isFlagsVoidTicket())
-			MessageBox.showMessage(OPERAZIONEANNULLATA, null, MessageBox.OK);
+			MessageBox.showMessage(RTConsts.OPERAZIONEANNULLATA, null, MessageBox.OK);
 	}
 	
 	public static String currentFiscalTotal(int what) throws JposException
@@ -4709,4 +4705,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return R3define.getBarcodePrefix();
 		}
 
+		public static String myRchFiscalNumber() {
+			return "";
+		}
+
+		public void bitmap(String filename, int width, int height, int align) {
+			fiscalPrinterDriver.bitmap(filename, width, height, align);
+		}
+		
 }
