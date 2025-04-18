@@ -95,18 +95,7 @@ public class SMTKCommands extends PrinterCommands {
 	        }
 	        else
 	        {
-				try {
-			        BufferedReader in = new BufferedReader(new FileReader(SharedPrinterFields.lastticket));
-			        String line;
-			        StringBuilder sb = new StringBuilder();
-			        while ((line = in.readLine()) != null) {
-			        	sb.append(line+R3define.Lf);
-			        }
-			        in.close();
-			        textfile = sb.toString();
-				} catch (Exception e) {
-					System.out.println("Smart_Ticket error : "+e.getMessage());
-				}
+	        	textfile = readFile(SharedPrinterFields.lastticket, true);
 	        }
 	        
 	    	System.out.println("SMTK - data="+date[0]);
@@ -159,19 +148,7 @@ public class SMTKCommands extends PrinterCommands {
 		{
 			// il file LastTicket.out viene già fatto normalmente
 			
-			String textfile = "";
-			try {
-		        BufferedReader in = new BufferedReader(new FileReader(SharedPrinterFields.lastticket));
-		        String line;
-		        StringBuilder sb = new StringBuilder();
-		        while ((line = in.readLine()) != null) {
-		        	sb.append(line+R3define.Lf);
-		        }
-		        in.close();
-		        textfile = sb.toString();
-			} catch (Exception e) {
-				System.out.println("Smart_Ticket error : "+e.getMessage());
-			}
+        	String textfile = readFile(SharedPrinterFields.lastticket, false);
 	        
 			String toEncode = SharedPrinterFields.lastticket;
 			String Encoded = rtsTrxBuilder.storerecallticket.Default.getsourcePath()+"LastTicket.b64";
