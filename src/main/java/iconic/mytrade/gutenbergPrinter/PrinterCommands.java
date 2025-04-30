@@ -64,6 +64,7 @@ import iconic.mytrade.gutenberg.jpos.printer.utils.RunShellScriptPoli20;
 import iconic.mytrade.gutenberg.jpos.printer.utils.SRTCheckInput;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenberg.jpos.printer.utils.String13Fix;
+import iconic.mytrade.gutenbergPrinter.eftpos.EftPos;
 import iconic.mytrade.gutenbergPrinter.ej.EjCommands;
 import iconic.mytrade.gutenbergPrinter.ej.ForFiscalEJFile;
 import iconic.mytrade.gutenbergPrinter.lottery.LotteryCommands;
@@ -1769,8 +1770,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		}
 		else
 		{
+			boolean isEftPayment = false;
+			
 			if (SRTPrinterExtension.isPRT()) {
 		        DummyServerRT.srtRecTotal tendermerge = null;
+		        String srtdescription = "";
 	        	String prefix = arg2;
 				if (arg2.indexOf(",") >= 0)
 					prefix = arg2.substring(0, arg2.indexOf(","));
@@ -1778,11 +1782,17 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					// il mop che si sta usando non è caricato nei 30 mop sulla printer, in questo caso lo consideriamo Contanti come fa la printer 
 					prefix = ""+SharedPrinterFields.INDICE_CONTANTI;
 				}
-		        tendermerge = new DummyServerRT.srtRecTotal(LoadMops.getSrtDescription(LoadMops.getRCHDescriptionPayment(Integer.parseInt(prefix))), arg1);
+				srtdescription = LoadMops.getSrtDescription(LoadMops.getRCHDescriptionPayment(Integer.parseInt(prefix)));
+		        tendermerge = new DummyServerRT.srtRecTotal(srtdescription, arg1);
+		        isEftPayment = LoadMops.isPagElettronico(srtdescription);
 			}
 			
 			System.out.println ( "MAPOTO before driver.printRecTotal - arg0="+arg0+" arg1="+arg1+" arg2="+arg2);
         	fiscalPrinterDriver.printRecTotal(arg0 / 100, arg1 / 100, arg2);
+        	if (isEftPayment) {
+        		// da specifiche per questa printer può esserci solo un pagamento eft e deve essere l'ultimo 
+        		EftPos.OfflineEftHandling(arg1, EftPos.getEFTAuthorizationCode(arg1));
+        	}
 			System.out.println ( "MAPOTO after driver.printRecTotal");
 			
 			if (enabledLowerRoundedPay == -1) {

@@ -15,6 +15,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketPrope
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenberg.jpos.printer.utils.String13Fix;
 import iconic.mytrade.gutenbergGuiPrinter.PrinterGUI;
+import iconic.mytrade.gutenbergPrinter.eftpos.EftPos;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
 import jpos.JposException;
 import jpos.events.ErrorListener;
@@ -230,6 +231,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //    		DicoTaxObject.setBASE_SERVICES_DEPT(Integer.parseInt(SharedPrinterFields.VAT_N4_Dept)+1);
 //    		Printer_IPAddress = getPrinterIpAdd();
 //			PrinterInfo.SavePrinterInfo("IPAddress", Printer_IPAddress);
+//			EftPos.OfflineEftSetting(EftPos.getEFTAuthorizationCode(0));
 //	    }
 	    
 //		LogPrinterLevel(RTPrinterId, fw, isfwLotteryenabled(), SharedPrinterFields.isfwRT2enabled(), isfwSMTKenabled(), isfwILotteryenabled());
