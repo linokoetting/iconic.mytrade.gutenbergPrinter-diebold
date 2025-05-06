@@ -37,7 +37,7 @@ public class EftPos extends PrinterCommands {
 	    return reply;
 	}
 	
-	public void setEFTAuthorizationCode(String stanCode, long amount) {
+	public static void setEFTAuthorizationCode(String stanCode, long amount) {
 		if (EFTStanCodes != null) {
 			EFTStanCodes.put(stanCode, amount);
 		}
