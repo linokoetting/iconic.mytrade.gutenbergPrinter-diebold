@@ -31,6 +31,7 @@ import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenberg.jpos.printer.utils.String13Fix;
 import iconic.mytrade.gutenbergPrinter.eftpos.EftPos;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
+import iconic.mytrade.gutenbergPrinter.rtchecks.RTchecks;
 import iconic.mytrade.gutenbergPrinter.tax.DicoTaxLoad;
 import iconic.mytrade.gutenbergPrinter.tax.DicoTaxObject;
 import jpos.FiscalPrinter;
@@ -297,6 +298,24 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 			System.out.println ( "Printer Exception <"+e.toString()+">");
 		}
 		
+		if (RTchecks.checkSRT(fiscalPrinter)) {
+			// isRT è cambiato
+			
+			setRTModel(SRTPrinterExtension.isPRT());
+			if (isRTModel()){
+				setSRTModel(false);
+				SRTPrinterExtension.setLikeNonFiscalMode(false);
+			}
+			System.out.println ("RetailCube-R3printers SRT Model                <"+isSRTModel()+">");
+			System.out.println ("RetailCube-R3printers RT Model                 <"+isRTModel()+">");
+			System.out.println ("RetailCube-R3printers Like Non Fiscal Mode     <"+SRTPrinterExtension.isLikeNonFiscalMode()+">");
+			
+			if (isSRTModel() || isRTModel())
+			{
+				HardTotals.init();
+			}
+		}
+		
 	    if (isRTModel())
 	    {
 	    	int rtstatus = RT_KO;
@@ -394,6 +413,8 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
     		EftPos.OfflineEftSetting(EftPos.getEFTAuthorizationCode(0));
 	    }
 	    
+    	RTchecks.checkLottery(isfwLotteryenabled());
+    	
 		LogPrinterLevel(SharedPrinterFields.RTPrinterId, fw, isfwLotteryenabled(), isfwRT2enabled(), isfwSMTKenabled(), isfwILotteryenabled());
 		PrinterInfo.LogPrinterInfo();
 		

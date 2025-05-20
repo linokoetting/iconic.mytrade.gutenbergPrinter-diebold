@@ -1788,7 +1788,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println ( "MAPOTO after driver.printRecTotal");
 			
 			if (enabledLowerRoundedPay == -1) {
-				if (fiscalPrinterDriver.isfwRT2enabled()) {
+				long rounding = (long)(Rounding.roundingSimulation(((double)arg0/10000))*10000);
+				System.out.println ( "MAPOTO after driver.printRecTotal - rounding="+rounding);
+				if (fiscalPrinterDriver.isfwRT2enabled() && rounding != 0.) {
 					progress_amount+=arg1;
 					if (arg2.indexOf(",") >= 0)
 						arg2 = arg2.substring(0, arg2.indexOf(","));
@@ -1801,8 +1803,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 						progress_cash = false;
 					System.out.println ( "MAPOTO after driver.printRecTotal - progress_amount="+progress_amount+" progress_cash="+progress_cash);
 					long stilltopay = arg0-progress_amount;
-					System.out.println ( "MAPOTO after driver.printRecTotal - stilltopay="+stilltopay+" getCURRENTROUNDING="+RTConsts.getCURRENTROUNDING()+" onlycash="+progress_cash);
-					if ((stilltopay > 0) && (stilltopay < 300)) {
+					System.out.println ( "MAPOTO after driver.printRecTotal - stilltopay="+stilltopay+" getCURRENTROUNDING="+RTConsts.getCURRENTROUNDING()+" onlycash="+progress_cash+" rounding="+rounding);
+					if ((stilltopay > 0) && (stilltopay < 300) && (Math.abs(stilltopay) == Math.abs(rounding))) {
 						if ((RTConsts.getCURRENTROUNDING() == RTConsts.FULLROUNDING) || (RTConsts.getCURRENTROUNDING() == RTConsts.NEGATIVEROUNDING)) {
 							if (progress_cash == true) {
 								System.out.println ( "MAPOTO before driver.printRecTotal("+arg0/100+","+stilltopay/100+","+SharedPrinterFields.INDICE_SCONTOAPAGARE+")");
@@ -4720,6 +4722,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    {
 	    	String tokenstart = EjTokens.getTokenStart().trim();
 	    	String tokenstop  = EjTokens.getTokenStop().trim();
+	    	
+	    	if (tokenstart == null || tokenstart.length() == 0)
+	    		return in;
+	    	if (tokenstop == null || tokenstop.length() == 0)
+	    		return in;
 	    	
 	    	String out = "";
 	    	if (in == null || in.length() == 0) {
