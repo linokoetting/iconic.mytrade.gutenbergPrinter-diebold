@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import iconic.mytrade.gutenberg.jpos.printer.service.properties.MyTradeProperties;
+import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;
 import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
 import jpos.JposException;
@@ -46,8 +48,20 @@ public class EftPos extends PrinterCommands {
 //        }
 	}
 	
-	public static void OfflineEftSetting(String authcode)
+	public static void OfflineEftSetting(String... authcodes)
 	{
+		String authcode = "";
+		if (authcodes != null && authcodes.length > 0)
+			authcode = authcodes[0];
+		else
+			authcode = EFTAuthorizationCode;
+		
+		if (!SRTPrinterExtension.isPRT())
+			return;
+		
+		if (MyTradeProperties.isOfflineEftHandling() == false)
+			return;
+		
 		System.out.println("OfflineEftSetting - authcode:"+authcode);
 		
 		// non sapendo se la stampante l'ha già recepito almeno una volta nella vita, io devo per forza mandarlo una volta al giorno
@@ -84,6 +98,9 @@ public class EftPos extends PrinterCommands {
 	
 	public static void OfflineEftHandling(long amount, String authcode)
 	{
+		if (MyTradeProperties.isOfflineEftHandling() == false)
+			return;
+		
 		System.out.println("OfflineEftHandling - amount:"+amount);
 		System.out.println("OfflineEftHandling - authcode:"+authcode);
 		
