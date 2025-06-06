@@ -450,7 +450,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		   	int oldFiletoSend = 0;
 		   
 			int ALLisOK = 7;
-			int maxFileStilltoSend = 5;	// ???
+			int maxFileStilltoSend = 5;
 			
 			StringBuffer op = new StringBuffer("0");
 			int ret = this.executeRTDirectIo(5001, 0, op);
@@ -2609,5 +2609,61 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	   public void bitmap(String filename,int width,int height,int align) //throws PrinterException
 	   {
 	   }
-		   
+	   
+	   int getVATTableEntry()
+	   {
+		   int ret = 0;
+	    	
+		   int cmdInt = 0;
+		   int[] mydata = {0};
+		   String cmd = SharedPrinterFields.KEY_X;
+		   try {
+			   fiscalPrinter.directIO(cmdInt, mydata, cmd);
+		   } catch (JposException e) {
+			   System.out.println("getVATTableEntry_Rch - getVATTableEntry_withEvents - Exception : " + e.getMessage());
+		   }
+	        
+		   DirectIOListener p=new DirectIOListener();
+		   fiscalPrinter.addDirectIOListener((jpos.events.DirectIOListener) p);
+			   
+		   cmd = "<</?C/&3";
+		   try {
+			   p.started = true;
+			   p.buffer="";
+			   fiscalPrinter.directIO(cmdInt, mydata, cmd);
+			   while (p.started) {
+				   try {
+					   Thread.sleep(500);
+				   } catch (InterruptedException e) {
+				   }
+			   }
+			   System.out.println("getVATTableEntry_Rch - buffer = "+p.buffer);
+			   //VNNNPPPP000000000000000000000000000000000000AB
+			   while (p.buffer.length() >= 46)
+			   {
+				   String s = p.buffer.substring(0, 46);
+				   System.out.println("getVATTableEntry_Rch - s = "+s);
+				   String aliquota = s.substring(1, 4);
+				   String rate = s.substring(4, 8);
+				   if ((Integer.parseInt(rate) < 100) && (Integer.parseInt(rate) > 0)) {
+					   ret = Integer.parseInt(aliquota);
+					   break;
+				   }
+				   p.buffer = p.buffer.substring(46);
+			   }
+		   } catch (JposException e) {
+			   System.out.println("getVATTableEntry_Rch - getVATTableEntry_withEvents - Exception : " + e.getMessage());
+		   }
+	        
+		   cmd = SharedPrinterFields.KEY_REG;
+		   try {
+			   fiscalPrinter.directIO(cmdInt, mydata, cmd);
+		   } catch (JposException e) {
+			   System.out.println("getVATTableEntry_Rch - getVATTableEntry_withEvents - Exception : " + e.getMessage());
+		   }
+	        
+		   System.out.println("getVATTableEntry_Rch - ret = "+ret);
+		   return ret;
+	   }
+
 }

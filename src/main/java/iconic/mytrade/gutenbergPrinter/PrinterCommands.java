@@ -916,10 +916,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 							DummyServerRT.CurrentDailyAmount = ""+(int)((Double.parseDouble(DummyServerRT.CurrentDailyAmount)+(HardTotals.Totale.getDouble()*100)));
 					}
 					
-					if (isRT2On()) {
-//						J14Data.setrsAllTicket(RoungickTax.getCompleteVatTable());	// ???
-					}
-					
 					DummyServerRT.pleaseDoFiscalReceipt(sco,
 													   	xml,
 													   	LoadMops.Mops,
@@ -1421,15 +1417,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		setFlagVoidRefund(false);
 		
-/*		ITransactionSale tsale = null;										// ???
-		try{
-			tsale = (ITransactionSale)posEngine.getTransaction();
-		}
-		catch(ClassCastException e){
+		if (AtLeastOnePrintedItem == false)
 			return;
-		}
-		if ((tsale != null) && (tsale.getItemLines(false).size() == 0))
-			return;*/
 		
 		if (!isprtDone() && (fiscalPrinterDriver.getPrinterState() == jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT))
 			fiscalPrinterDriver.printRecSubtotal(arg0);
@@ -1623,21 +1612,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		if (SRTPrinterExtension.isPRT()){
 			if ((arg0 == 0) && (arg1 == 0)) {
-/*				ITransactionSale tsale = null;												// ???
-				try{
-					tsale = (ITransactionSale)posEngine.getTransaction();
-				}
-				catch(ClassCastException e){
-				}
-				if ((tsale != null) && ((tsale.getItemLines(false).size() == 0) || (AtLeastOnePrintedItem == false))){
-					int aliquota = getVATTableEntry_Rch();
+				if (AtLeastOnePrintedItem == false){
+					int aliquota = fiscalPrinterDriver.getVATTableEntry();
 					// brutto ma per ora la stampante si incazza se si passa la tessera 
 					// e poi si chiude lo scontrino a zero senza vendere nulla
 					// oppure se nello scontrino non c'è nessun item fiscale
-					//fiscalPrinterDriver.printRecItem("....................", 1, 0, 8, 0, "");
-					//fiscalPrinterDriver.printRecVoidItem("....................", 1, 1, 1, 0, 8);
 					fiscalPrinterDriver.printRecItem("....................", 0, 0, aliquota, 0, "");
-				}*/
+				}
 			}
 		}
 		
