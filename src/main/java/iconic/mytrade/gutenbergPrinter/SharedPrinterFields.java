@@ -3,6 +3,7 @@ package iconic.mytrade.gutenbergPrinter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.RTLottery;
 import iconic.mytrade.gutenberg.jpos.printer.service.mop.MediaInfo;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.AtecoInfo;
@@ -126,14 +127,14 @@ public class SharedPrinterFields {
 			ejcmd = new EjCommands();
 		return ejcmd;
 	}
+
+	private static int myReply = R3define.PRINTER_OK;
 	
-	private static boolean myReply = false;
-	
-	public static boolean getMyReply() {
+	public static int getMyReply() {
 		return myReply;
 	}
 
-	public static void setMyReply(boolean myReply) {
+	public static void setMyReply(int myReply) {
 		SharedPrinterFields.myReply = myReply;
 	}
 
