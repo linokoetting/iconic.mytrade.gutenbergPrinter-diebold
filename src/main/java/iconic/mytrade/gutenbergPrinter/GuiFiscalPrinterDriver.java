@@ -1435,6 +1435,8 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 			((StringBuffer)bjct).setLength(1);
 		else if (Command == 4237)
 			((StringBuffer)bjct).append("123456789012345678901");
+		else if (Command == 6000 || Command == 6001)
+			return 1;
 		else
 			((StringBuffer)bjct).append("12345678");
 		
