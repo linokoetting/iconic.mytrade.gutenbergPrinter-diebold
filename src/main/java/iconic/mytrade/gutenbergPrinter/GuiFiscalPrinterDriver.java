@@ -160,7 +160,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //				}
 //	    	}
 //	    }
-	    SharedPrinterFields.RTPrinterId = "99MEX024625";
+	    SharedPrinterFields.RTPrinterId = "72MU1059643"/*"99MEX024625"*/;
 	    
 //		int[] ai = new int[1];
 //		String[] as = new String[1];

@@ -7,6 +7,7 @@ import iconic.mytrade.gutenberg.jpos.printer.srt.RTConsts;
 import iconic.mytrade.gutenberg.jpos.printer.srt.Xml4SRT;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;
+import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
 import iconic.mytrade.gutenbergPrinter.ej.ForFiscalEJFile;
 import jpos.FiscalPrinterConst;
 import jpos.JposException;
@@ -64,6 +65,9 @@ public class VoidCommands extends PrinterCommands {
 	
 	private void VoidDocumentToEJ(String zRepId, String recId, String date, String printerId) throws JposException
 	{
+		if (!SharedPrinterFields.isfiscalEJenabled())
+			return;
+		
   		String barre = "========================================";
 		String[] doc = {""};
 		ForFiscalEJFile.writeToFile("\n\t\t"+barre);
