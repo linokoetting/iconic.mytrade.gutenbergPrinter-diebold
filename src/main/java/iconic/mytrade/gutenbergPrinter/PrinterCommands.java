@@ -52,6 +52,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.properties.PaperSavingPrope
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
+import iconic.mytrade.gutenberg.jpos.printer.service.properties.XRData;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.RoungickTax;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.VatInOutHandling;
 import iconic.mytrade.gutenberg.jpos.printer.srt.DummyServerRT;
@@ -70,6 +71,7 @@ import iconic.mytrade.gutenbergPrinter.eftpos.EftPos;
 import iconic.mytrade.gutenbergPrinter.ej.EjCommands;
 import iconic.mytrade.gutenbergPrinter.ej.ForFiscalEJFile;
 import iconic.mytrade.gutenbergPrinter.lottery.LotteryCommands;
+import iconic.mytrade.gutenbergPrinter.monitorrt.MonitorRT;
 import iconic.mytrade.gutenbergPrinter.mop.LoadMops;
 import iconic.mytrade.gutenbergPrinter.refund.RefundCommands;
 import iconic.mytrade.gutenbergPrinter.report.Report;
@@ -284,6 +286,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		simulateState = State;
 		return ( getSimulateState() );
 	}
+	
+	public static MonitorRT monitorRT = null;
 	
 	protected static GuiFiscalPrinterDriver fiscalPrinterDriver = null;
 	
@@ -1032,6 +1036,31 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		SMTKCommands.Base64_Ticket(PosApp.getTransactionNumber()-1, false);
 		SMTKCommands.Smart_Ticket(PosApp.getTransactionNumber()-1, false);
+		
+		if (XRData.MonitorRTisActive()) {
+			if (SRTPrinterExtension.isPRT()) {
+			
+				if (monitorRT == null) monitorRT = new MonitorRT();
+				
+		    	String[] date = new String[1];
+				try {
+					fiscalPrinterDriver.getDate(date);
+				} catch (Exception e) {
+					monitorRT.logMRT("Exception : "+e.getMessage());
+				}
+	    	
+				try {
+					monitorRT.MonitorRT_Ticket(PosApp.getTransactionNumber()-1, DummyServerRT.CurrentFiscalClosure, DummyServerRT.CurrentReceiptNumber, SharedPrinterFields.RTPrinterId, date[0]);
+				} catch (Exception e) {
+					monitorRT.logMRT("Exception : "+e.getMessage());
+				}
+			
+				String textfile = readFile(SharedPrinterFields.lastticket, true);
+	        
+				monitorRT.GetTicketDetails(SharedPrinterFields.RTPrinterId, date[0], DummyServerRT.CurrentFiscalClosure, DummyServerRT.CurrentReceiptNumber,
+	        						   	   currentTicket/100, monitorRT.AliquoteTicket, textfile);
+			}
+		}
 	}
 	
 	private void endFiscalReceipt_I(boolean arg0) throws JposException {
@@ -2224,12 +2253,48 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
   	    
   	    setFlagVoidRefund(false);
   	    
+		if (XRData.MonitorRTisActive()) {
+			if (SRTPrinterExtension.isPRT()) {
+				
+				if (monitorRT == null) monitorRT = new MonitorRT();
+				
+				try {
+					monitorRT.preMonitorRT();
+				} catch (Exception e) {
+					monitorRT.logMRT("Exception : "+e.getMessage());
+				}
+			}
+		}
+		
   	    fiscalPrinterDriver.printZReport();
   	    
 		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
 		{
 			HardTotals.ProAzz.add(1);
 			HardTotals.delReportZ();
+		}
+		
+		if (XRData.MonitorRTisActive()) {
+			if (SRTPrinterExtension.isPRT()) {
+				
+				if (monitorRT == null) monitorRT = new MonitorRT();
+				
+				try {
+			    	if (DummyServerRT.CurrentFiscalClosure == 0) {
+		    	        int[] ai = new int[1];
+		    	        String[] as = new String[1];
+		                getData(FiscalPrinterConst.FPTR_GD_Z_REPORT, ai, as);
+		                DummyServerRT.CurrentFiscalClosure = Integer.parseInt(as[0])+1;
+			    	}
+			    	
+			    	String[] date = new String[1];
+			    	fiscalPrinterDriver.getDate(date);
+			    	
+					monitorRT.doMonitorRT(SharedPrinterFields.Printer_IPAddress, DummyServerRT.CurrentFiscalClosure, SharedPrinterFields.RTPrinterId, date[0], PosApp.getTillNumber());
+				} catch (Exception e) {
+					monitorRT.logMRT("Exception : "+e.getMessage());
+				}
+			}
 		}
 		
 		if (SRTPrinterExtension.isPRT())
@@ -4551,6 +4616,34 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			}
 		}
 
+		protected boolean MixedVat()
+		{
+			// controlla se siamo in regime di Iva Ventilata
+			
+			//System.out.println("MixedVat - vat = " + vat);
+			
+			boolean ret = false;
+			
+			// non so in quale altra maniera capire se la stampante Rtone lavora in iva ventilata
+			// attenzione che se nella giornata la stampante non ha lavorato mi resta ivaventilata=false anche quando
+			// l'impostazione e' in iva ventilata, però non avendo lavorato i danni dovrebbero essere limitati (spero) 
+			String[] dailyreport = VatReport(0, 40);
+			for (int i=0; i < dailyreport.length; i++) {
+				String vattype = "";
+				if (dailyreport[i].length() == 32) {
+					vattype = dailyreport[i].substring(3, 4);
+					if (Integer.parseInt(vattype) == 2) {
+						// iva ventilata
+						ret = true;
+						break;
+					}
+				}
+			}
+			
+			//System.out.println("MixedVat - ret = " + ret);
+			return ret;
+		}
+		
 		private boolean MixedVat(String vat)
 		{
 			// controlla se siamo in regime di Iva Ventilata
@@ -4746,5 +4839,57 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    	
 	    	return out;
 	    }
+	    
+	    protected int getSimulation()
+	    {
+	    	return fiscalPrinterDriver.getSimulation();
+	    }
+	    
+		protected String getZRepIdAnswer(int zrep)
+		{
+			String ZRepId = "";
+			
+			// c'è qualche altro modo per capire quando la trasmissione/ricezione è completata ?
+			ZRepId = "123456789012";
 				
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+			}
+			
+			System.out.println("getZRepIdAnswer - returning : "+ZRepId);
+			return ZRepId;
+		}
+		
+		protected String[] VatReport(int reporttype, int type)
+		{
+			String reply[] = new String[0];
+			
+			if (type == 40)
+				type = 0;			// Total gross amount of sales (goods+services) by VAT rate
+			else if (type == 41)
+				type = 20;			// Total gross amount of refund documents by VAT rate
+			else if (type == 42)
+				type = 10;			// Total gross amount of void documents by VAT rate
+			
+			return (fiscalPrinterDriver.DailyPeriodicReport(reporttype, type));
+		}
+		
+		protected String[] VatReport(int type, int zrepnum, String docnum, String date)
+		{
+			String reply[] = new String[0];
+			
+			return (fiscalPrinterDriver.SingleDocumentReport(type, zrepnum, docnum, date));
+		}
+		
+		protected String[] PaymentReport(int reporttype, int type)
+		{
+			String reply[] = new String[0];
+			
+				
+			type = 30;				// Amount collected for a single payment type
+				
+			return (fiscalPrinterDriver.DailyPeriodicReport(reporttype, type));
+		}
+		
 }

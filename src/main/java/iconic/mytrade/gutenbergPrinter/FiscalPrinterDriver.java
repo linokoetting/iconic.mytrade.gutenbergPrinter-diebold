@@ -1083,7 +1083,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		   
 		   int A = Integer.parseInt(p.buffer.substring(0, 1));
 		   vpstateactive = (A == 1 ? "true" : "false");
-		   System.out.println("checkRTStatus - getVPSetting - VP State active = "+vpexpired);
+		   System.out.println("checkRTStatus - getVPSetting - VP State active = "+vpstateactive);
 		   
 	   } catch (Exception e) {
 		   System.out.println("checkRTStatus - getVPSetting - Exception : " + e.getMessage());
@@ -2620,7 +2620,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		   try {
 			   fiscalPrinter.directIO(cmdInt, mydata, cmd);
 		   } catch (JposException e) {
-			   System.out.println("getVATTableEntry_Rch - getVATTableEntry_withEvents - Exception : " + e.getMessage());
+			   System.out.println("getVATTableEntry - getVATTableEntry_withEvents - Exception : " + e.getMessage());
 		   }
 	        
 		   DirectIOListener p=new DirectIOListener();
@@ -2637,12 +2637,12 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 				   } catch (InterruptedException e) {
 				   }
 			   }
-			   System.out.println("getVATTableEntry_Rch - buffer = "+p.buffer);
+			   System.out.println("getVATTableEntry - buffer = "+p.buffer);
 			   //VNNNPPPP000000000000000000000000000000000000AB
 			   while (p.buffer.length() >= 46)
 			   {
 				   String s = p.buffer.substring(0, 46);
-				   System.out.println("getVATTableEntry_Rch - s = "+s);
+				   System.out.println("getVATTableEntry - s = "+s);
 				   String aliquota = s.substring(1, 4);
 				   String rate = s.substring(4, 8);
 				   if ((Integer.parseInt(rate) < 100) && (Integer.parseInt(rate) > 0)) {
@@ -2652,18 +2652,236 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 				   p.buffer = p.buffer.substring(46);
 			   }
 		   } catch (JposException e) {
-			   System.out.println("getVATTableEntry_Rch - getVATTableEntry_withEvents - Exception : " + e.getMessage());
+			   System.out.println("getVATTableEntry - getVATTableEntry_withEvents - Exception : " + e.getMessage());
 		   }
 	        
 		   cmd = SharedPrinterFields.KEY_REG;
 		   try {
 			   fiscalPrinter.directIO(cmdInt, mydata, cmd);
 		   } catch (JposException e) {
-			   System.out.println("getVATTableEntry_Rch - getVATTableEntry_withEvents - Exception : " + e.getMessage());
+			   System.out.println("getVATTableEntry - getVATTableEntry_withEvents - Exception : " + e.getMessage());
 		   }
 	        
-		   System.out.println("getVATTableEntry_Rch - ret = "+ret);
+		   System.out.println("getVATTableEntry - ret = "+ret);
 		   return ret;
 	   }
+	   
+	   public int getLotteryRec(String till, String date, int repz) {
+		   int ret = 0;
+			
+		   String buffer = "";
+				
+		   int cmdInt = 0;
+		   int[] mydata = {0};
+		   String cmd = SharedPrinterFields.KEY_Z;
+		   try {
+			   fiscalPrinter.directIO(cmdInt, mydata, cmd);
+		   } catch (JposException e) {
+			   System.out.println("getLotteryRec - Exception : " + e.getMessage());
+		   }
+		        
+		   DirectIOListener p=new DirectIOListener();
+		   fiscalPrinter.addDirectIOListener((jpos.events.DirectIOListener) p);
+
+		   cmd = "=C488/&"+date+"/*0";
+		   try {
+			   p.started = true;
+			   p.buffer="";
+			   fiscalPrinter.directIO(cmdInt, mydata, cmd);
+			   while (p.started) {
+				   try {
+					   Thread.sleep(500);
+				   } catch (InterruptedException e) {
+				   }
+			   }
+		    	   
+		   } catch (JposException e) {
+			   System.out.println("getLotteryRec - Exception : " + e.getMessage());
+		   }
+		       
+		   buffer = p.buffer;
+		        
+		   fiscalPrinter.removeDirectIOListener(p);
+		   	   
+		   cmd = SharedPrinterFields.KEY_REG;
+		   try {
+			   fiscalPrinter.directIO(cmdInt, mydata, cmd);
+		   } catch (JposException e) {
+			   System.out.println("getLotteryRec - Exception : " + e.getMessage());
+		   }
+		        
+		   //0214-0003 00000 AC, 0214-0004 00000 AC, 0215-0001 00000 AC01010NON000000003E4
+		   StringTokenizer st = new StringTokenizer(buffer, ",");
+		   String[] tmp = new String[st.countTokens()];
+		   for (int i = 0; i < tmp.length; i++) {
+			   tmp[i] = st.nextToken().trim();
+			   if (Integer.parseInt(tmp[i].substring(0, 4)) == repz)	// sommo accettati + rifiutati + archiviati
+				   ret++;
+		   }
+			
+		   return ret;
+	   }
+	   
+	   protected int getSimulation()
+	   {
+		   int ret = 0;
+		   
+		   DirectIOListener p=new DirectIOListener();
+		   fiscalPrinter.addDirectIOListener((jpos.events.DirectIOListener) p);
+		   
+		   try {
+			   int cmdInt = 0;
+			   int[] mydata = {0};
+			   String cmd = "<</?i/*7";
+		        
+			   p.started = true;
+			   p.buffer="";
+				
+			   fiscalPrinter.directIO(cmdInt, mydata, cmd);
+			   while (p.started) {
+				   try {
+					   Thread.sleep(500);
+				   } catch (InterruptedException e) {
+				   }
+			   }
+				
+			   System.out.println("getSimulation - State active = "+p.buffer);
+			   
+			   int B = Integer.parseInt(p.buffer.substring(1, 2));
+			   ret = B;
+			   
+		   } catch (Exception e) {
+			   System.out.println("getSimulation - Exception : " + e.getMessage());
+			   return ret;
+		   } finally {
+			   fiscalPrinter.removeDirectIOListener(p);
+		   }
+		   
+		   return ret;
+	    }
+
+		String[] DailyPeriodicReport(int reporttype, int type)
+		{
+			String reply[] = new String[0];
+			
+			int cmdInt = 0;
+	        int[] mydata = {0};
+	        String cmd = SharedPrinterFields.KEY_X;
+	        try {
+	        	fiscalPrinter.directIO(cmdInt, mydata, cmd);
+			} catch (JposException e) {
+				System.out.println("DailyPeriodicReport - Exception : " + e.getMessage());
+			}
+	        
+	        DirectIOListener p=new DirectIOListener();
+	        fiscalPrinter.addDirectIOListener((jpos.events.DirectIOListener) p);
+		   
+	        cmd = "=C508/*"+type;		// daily report
+	        if (reporttype == 1)		
+	        	cmd = "=C518/*"+type;	// periodical report
+		   
+	        try {
+	        	p.started = true;
+				p.buffer="";
+				fiscalPrinter.directIO(cmdInt, mydata, cmd);
+				while (p.started) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+					}
+				}
+		      	System.out.println("DailyPeriodicReport - buffer = "+p.buffer);
+		      	
+				StringTokenizer st = new StringTokenizer(p.buffer, " !");		// spero che sia la regola il blank oppure il ! separatore
+				String[] ret = new String[st.countTokens()];
+				for (int i = 0; i < ret.length; i++) {
+					ret[i] = st.nextToken();
+				}
+				
+				int i=0;
+				for (i=0; i < ret.length; i++) {
+					if (ret[i].length() < 32)
+						break;
+				}
+				reply = new String[i];
+				for (int j=0; j < i; j++) {
+					reply[j] = ret[j];
+				}
+	        } catch (JposException e) {
+	        	System.out.println("DailyPeriodicReport - Exception : " + e.getMessage());
+	        }
+		   
+	        fiscalPrinter.removeDirectIOListener(p);
+	 	   
+	        cmd = SharedPrinterFields.KEY_REG;
+	        try {
+	        	fiscalPrinter.directIO(cmdInt, mydata, cmd);
+	        } catch (JposException e) {
+	        	System.out.println("DailyPeriodicReport - Exception : " + e.getMessage());
+	        }
+			
+			return reply;
+		}
+
+		String[] SingleDocumentReport(int type, int zrepnum, String docnum, String date)
+		{
+			String reply[] = new String[0];
+			
+			int cmdInt = 0;
+	        int[] mydata = {0};
+	        String cmd = SharedPrinterFields.KEY_X;
+	        try {
+	        	fiscalPrinter.directIO(cmdInt, mydata, cmd);
+			} catch (JposException e) {
+				System.out.println("SingleDocumentReport - Exception : " + e.getMessage());
+			}
+	        
+	        DirectIOListener p=new DirectIOListener();
+	        fiscalPrinter.addDirectIOListener((jpos.events.DirectIOListener) p);
+		   
+	        cmd = "=C528/&"+date.substring(0, 4)+date.substring(6, 8)+"/["+zrepnum+"/]"+docnum+"/*"+type;
+		   
+	        try {
+	        	p.started = true;
+				p.buffer="";
+				fiscalPrinter.directIO(cmdInt, mydata, cmd);
+				while (p.started) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+					}
+				}
+		      	System.out.println("SingleDocumentReport - buffer = "+p.buffer);
+		      	
+				StringTokenizer st = new StringTokenizer(p.buffer, " !");		// spero che sia la regola il blank oppure il ! separatore
+				String[] ret = new String[st.countTokens()];
+				for (int i = 0; i < ret.length; i++) {
+					ret[i] = st.nextToken();
+				}
+				
+				int i=0;
+				for (i=0; i < ret.length; i++) {
+					if (ret[i].length() < 32)
+						break;
+				}
+				reply = new String[i];
+				for (int j=0; j < i; j++) {
+					reply[j] = ret[j];
+				}
+	        } catch (JposException e) {
+	        	System.out.println("SingleDocumentReport - Exception : " + e.getMessage());
+	        }
+		   
+	        fiscalPrinter.removeDirectIOListener(p);
+	 	   
+	        cmd = SharedPrinterFields.KEY_REG;
+	        try {
+	        	fiscalPrinter.directIO(cmdInt, mydata, cmd);
+	        } catch (JposException e) {
+	        	System.out.println("SingleDocumentReport - Exception : " + e.getMessage());
+	        }
+			
+			return reply;
+		}
 
 }
