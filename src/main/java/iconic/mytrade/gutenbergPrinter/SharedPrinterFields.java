@@ -218,6 +218,8 @@ public class SharedPrinterFields {
 		return ejcmd;
 	}
 
+	public static String WorkingFolder = "";
+	
 	private static int myReply = R3define.PRINTER_OK;
 	
 	public static int getMyReply() {
