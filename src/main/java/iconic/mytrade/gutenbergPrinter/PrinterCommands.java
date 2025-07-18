@@ -147,20 +147,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	private String PI = "P.IVA. Cliente ";
 	private int CFLEN = 16;
 	private int PILEN = 11;
-	private String CFPIvaTag = "CoDICefiSCAlepaRTItaiVA:";
-	private boolean CFPIvaFlag = false;
-	
-	private String getCFPIvaTag() {
-		return CFPIvaTag;
-	}
-	
-    private boolean isCFPIvaFlag() {
-		return CFPIvaFlag;
-	}
-    
-	private void setCFPIvaFlag(boolean cFPIvaFlag) {
-		CFPIvaFlag = cFPIvaFlag;
-	}
     
 	private boolean flagVoidRefund = false;
 	
@@ -186,53 +172,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		flagsVoidTicket = flagsvoidticket;
 	}
 	
-	private boolean	prtDone;	// printrectotalDone
-	
-	private boolean isprtDone()
-	{	
-		return ( prtDone );
-	}
-	
-	private boolean setprtDone()
-	{
-		prtDone = true;
-		return ( isprtDone() );
-	}
-	
-	private boolean resetprtDone()
-	{
-		prtDone = false;
-		return ( isprtDone() );
-	}
-	
 	private static String lastticketsaved = null;
     private static String lastwrittenstring = "";
 	
 	private boolean	inReset;
 	
-	private long theBill;
-	
-	private long cleanTheBill( )
-	{
-		return ( this.setTheBill( 0 ) );
-	}
-	
-	private long setTheBill( long V )
-	{
-		theBill =  V;
-		return ( getTheBill() );
-	}
-	
-	private long getTheBill( )
-	{
-		return ( theBill );
-	}
-	
-	private boolean checkTheBill ( long T, long P )
-	{
-		return ( (T <= setTheBill( getTheBill() + P ) ) );
-	}
-   
 //    static ICurrency discountedtaxamount = CurrencyInfo.newCurrency(null,0.0);	// prima era così
 	static BigDecimal discountedtaxamount = new BigDecimal(0.);
 	
@@ -253,39 +197,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	protected static double smtkamount = 0.;
 
 	private ArrayList xml = null;
-	
-	private static int simulateState;
-	
-	private static int setMonitorState()
-	{	
-		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_MONITOR ) );
-	}
-	
-	private static int setFiscalState()
-	{	
-		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT ) );
-	}
-	
-	private static int setNonFiscalState()
-	{	
-		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_NONFISCAL ) );
-	}
-	
-	private int setEndingFiscalState()
-	{	
-		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT_ENDING ) );
-	}
-	
-	private static int getSimulateState()
-	{	
-		return ( simulateState );
-	}
-	
-	private static int setSimulateState( int State )
-	{
-		simulateState = State;
-		return ( getSimulateState() );
-	}
 	
 	public static MonitorRT monitorRT = null;
 	
@@ -487,7 +398,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		}
 		
 		SharedPrinterFields.resetInTicket();
-		resetprtDone();
+		SharedPrinterFields.resetprtDone();
 		RTConsts.setMAXITEMDESCRLENGTH(false, SRTPrinterExtension.isSRT(), SRTPrinterExtension.isNotLikeNonFiscalMode(), false);
 		
 		try
@@ -522,13 +433,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	public void beginFiscalReceipt(boolean arg0) throws JposException
 	{
 		System.out.println("MAPOTO-EXEC BEGINFISCAL");
-		
-		SharedPrinterFields.setInTicket();
-		resetprtDone();
-		cleanTheBill();
-		setFiscalState();
-		setCFPIvaFlag(false);
-		SharedPrinterFields.Lotteria.setILotteryCode("");
 		
 		if (SRTPrinterExtension.isPRT()){
 			String[] doc = {""};
@@ -985,7 +889,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					  	    setFlagsVoidTicket( false );
 	  	    			}
 						
-						setMonitorState();
+	  	    			SharedPrinterFields.setMonitorState();
 						SharedPrinterFields.a = new ArrayList();
 				   		
 				   		RTTxnType.setSaleTrx();
@@ -1080,7 +984,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			DummyServerRT.StoreTicket4Reprint(DummyServerRT.CurrentReceiptNumber);
 			
-			setMonitorState();
+			SharedPrinterFields.setMonitorState();
 			SharedPrinterFields.a = new ArrayList();
 
 			RTTxnType.setSaleTrx();
@@ -1100,7 +1004,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		setFlagVoidRefund(false);
 		AtLeastOnePrintedItem = false;
 		int state=0;
-		resetprtDone();
+		SharedPrinterFields.resetprtDone();
 		
 		System.out.println ( "MAPOTO-EXEC_ENDFISCAL" );
 		
@@ -1130,7 +1034,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		if (SRTPrinterExtension.isPRT())
 			RTTxnType.setSaleTrx();
 
-		setMonitorState();
+		SharedPrinterFields.setMonitorState();
 		SharedPrinterFields.a = new ArrayList();			// prova reset scontrino precedente
 		
 		CanPost.setCanPost(true);
@@ -1172,10 +1076,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	public void beginNonFiscal() throws JposException {
    		System.out.println(  "MAPOTO-EXEC BEGINNONFISCALT <"+getFiscalPrinterState()+">");
 		
-		SharedPrinterFields.setInTicket();
-		resetprtDone();
-		setNonFiscalState();
-		
 		if (SRTPrinterExtension.isSRT())
 		{
 			HardTotals.doBeginNonFiscal();
@@ -1214,10 +1114,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		setFlagVoidRefund(false);
 		SharedPrinterFields.resetInTicket();
-		resetprtDone();
+		SharedPrinterFields.resetprtDone();
     	PrintLogo(TRAILER_LOGO_NUMBER);
     	fiscalPrinterDriver.endNonFiscal( );
-		setMonitorState();
+    	SharedPrinterFields.setMonitorState();
 	}
 	
 	public void printRecItemAdjustment(int arg0, String arg1, long arg2, int arg3) throws JposException {
@@ -1304,8 +1204,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    String[] msg = String13Fix.split(s1,"�");
 	    for (int z = 0; z < msg.length; z++)
 	    {
-        	if (msg[z].startsWith(getCFPIvaTag())) {
-        		String cfpi = msg[z].substring(getCFPIvaTag().length());
+        	if (msg[z].startsWith(SharedPrinterFields.getCFPIvaTag())) {
+        		String cfpi = msg[z].substring(SharedPrinterFields.getCFPIvaTag().length());
                 cfpi = String13Fix.replaceAll(cfpi, "\r", "");
                 cfpi = String13Fix.replaceAll(cfpi, "\n", "").trim();
         		if (SRTPrinterExtension.isPRT()) {
@@ -1449,7 +1349,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		if (AtLeastOnePrintedItem == false)
 			return;
 		
-		if (!isprtDone() && (fiscalPrinterDriver.getPrinterState() == jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT))
+		if (!SharedPrinterFields.isprtDone() && (fiscalPrinterDriver.getPrinterState() == jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT))
 			fiscalPrinterDriver.printRecSubtotal(arg0);
 	}
 
@@ -1739,7 +1639,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		}
 		
 		setFlagVoidRefund(false);
-		setprtDone();
+		SharedPrinterFields.setprtDone();
 		
 		if ( isCurrentTicketZero() )
 		{
@@ -2625,7 +2525,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		try {
 			resetAndClear();
 			RTTxnType.setSaleTrx();
-			setMonitorState();
+			SharedPrinterFields.setMonitorState();
 			CanPost.setCanPost(true);
             if (SharedPrinterFields.isfiscalEJenabled()) ForFiscalEJFile.writeToFile(RTConsts.RESOANNULLATO);
 		} catch (JposException e) {
@@ -2943,7 +2843,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			{
 				if ( SharedPrinterFields.isInTicket() )
 				{
-					return ( getSimulateState() );
+					return ( SharedPrinterFields.getSimulateState() );
 				}
 				else
 				{
@@ -3235,8 +3135,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	        			break;
 	        		}
 	        	}
-	        	if (msg.startsWith(getCFPIvaTag())) {
-	        		String cfpi = msg.substring(getCFPIvaTag().length());
+	        	if (msg.startsWith(SharedPrinterFields.getCFPIvaTag())) {
+	        		String cfpi = msg.substring(SharedPrinterFields.getCFPIvaTag().length());
 	                cfpi = String13Fix.replaceAll(cfpi, "\r", "");
 	                cfpi = String13Fix.replaceAll(cfpi, "\n", "").trim();
 	        		if (SRTPrinterExtension.isPRT()) {
@@ -3412,7 +3312,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				System.out.println("printRecCFPiva - sbcmd = "+sbcmd.toString());
 				fiscalPrinterDriver.executeRTDirectIo(0, 0, sbcmd);
 				System.out.println("printRecCFPiva - sbcmd = "+sbcmd.toString());
-				setCFPIvaFlag(true);
+				SharedPrinterFields.setCFPIvaFlag(true);
 			}
 		}
 		
