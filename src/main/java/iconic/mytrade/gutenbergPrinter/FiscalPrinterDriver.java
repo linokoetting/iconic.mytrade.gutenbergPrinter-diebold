@@ -23,7 +23,11 @@ import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
 import iconic.mytrade.gutenberg.jpos.printer.service.TakeYourTime;
 import iconic.mytrade.gutenberg.jpos.printer.service.TicketErrorSupport;
+import iconic.mytrade.gutenberg.jpos.printer.service.Asynchronous.AsynchronousEvent;
+import iconic.mytrade.gutenberg.jpos.printer.service.Asynchronous.GutenbergAction;
+import iconic.mytrade.gutenberg.jpos.printer.service.Asynchronous.GutenbergActions;
 import rtsTrxBuilder.hardTotals.HardTotals;
+import iconic.mytrade.gutenberg.jpos.printer.service.properties.Lotteria;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
@@ -412,7 +416,10 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 			PrinterInfo.SavePrinterInfo("IPAddress", SharedPrinterFields.Printer_IPAddress);
 	    }
 	    
-    	RTchecks.checkLottery(isfwLotteryenabled());
+    	if (RTchecks.checkLottery(isfwLotteryenabled())) {
+    		SharedPrinterFields.Lotteria.setLotteryOn(SharedPrinterFields.Lotteria.getLottery_disabled() == 0);
+	    	AsynchronousEvent.go(null, new GutenbergAction(GutenbergActions.PleaseReloadLottery, Lotteria.isEnable(), Lotteria.isPrintBarcode()));
+    	}
     	
 		LogPrinterLevel(SharedPrinterFields.RTPrinterId, fw, isfwLotteryenabled(), isfwRT2enabled(), isfwSMTKenabled(), isfwILotteryenabled());
 		PrinterInfo.LogPrinterInfo();
@@ -465,8 +472,8 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 				outOfService = ((ret & 0x08) >> 3);
 				System.out.println("checkRTStatus - RT Out Of Service : " + outOfService);
 				
-				boolean lottery_disabled = (outOfService == 1);
-				SharedPrinterFields.Lotteria.setLotteryOn(!lottery_disabled);
+				SharedPrinterFields.Lotteria.setLottery_disabled(outOfService);
+				SharedPrinterFields.Lotteria.setLotteryOn(SharedPrinterFields.Lotteria.getLottery_disabled() == 0);
 				
 				if (ret == ALLisOK){
 			    	ret = RTstilltosend();
