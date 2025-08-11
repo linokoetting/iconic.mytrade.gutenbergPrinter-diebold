@@ -3946,6 +3946,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					System.out.println("RTVoid - e:"+e.getMessage());
 				}
 				
+				RTTxnType.setSaleTrx();
+				
+				SetVoidTrx.resetVoidTrx();
+				
 				return true;
 			}
 			
