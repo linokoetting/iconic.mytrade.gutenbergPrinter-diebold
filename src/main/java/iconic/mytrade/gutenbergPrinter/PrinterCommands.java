@@ -720,7 +720,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		{
 			HardTotals.doPrintRecItem(l);
 			
-			String ivadesc = String.format("%.2f", DicoTaxLoad.getDTO(j).getTaxrate())+"%";
+			String ivadesc = String.format("%.2f", DicoTaxLoad.getDTO(jIvaPolipos).getTaxrate())+"%";
 			s = addIva(s, RTConsts.getMAXITEMDESCRLENGTH()-1, ivadesc);
 			
 			scriviLastTicket(buildItem ( s, l ));
@@ -1334,7 +1334,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		{
 		  	HardTotals.doPrintRecRefund(l);
 		  	
-			String ivadesc = String.format("%.2f", DicoTaxLoad.getDTO(i).getTaxrate())+"%";
+			String ivadesc = String.format("%.2f", DicoTaxLoad.getDTO(iIvaPolipos).getTaxrate())+"%";
 			s = addIva(s, RTConsts.getMAXITEMDESCRLENGTH()-1, ivadesc);
 			
 			scriviLastTicket(buildItemRefund ( s, l ));
@@ -2247,7 +2247,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		 return getFiscalPrinterState();
 	}
 	
-	public static boolean getCoverOpen()
+	public boolean getCoverOpen()
 	{
 		boolean retv = false;
 		try
@@ -2261,7 +2261,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return retv;
 	}
 	
-	public static boolean getJrnEmpty()
+	public boolean getJrnEmpty()
 	{
 		boolean retv = false;
 		try
@@ -2275,7 +2275,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return retv;
 	}
 	
-	public static boolean getJrnNearEnd()
+	public boolean getJrnNearEnd()
 	{
 		boolean retv = false;
 		try
@@ -2289,7 +2289,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return retv;
 	}
 	
-	public static boolean getRecEmpty()
+	public boolean getRecEmpty()
 	{
 		boolean retv = false;
 		try
@@ -2303,7 +2303,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return retv;
 	}
 	
-	public static boolean getRecNearEnd()
+	public boolean getRecNearEnd()
 	{
 		boolean retv = false;
 		try
