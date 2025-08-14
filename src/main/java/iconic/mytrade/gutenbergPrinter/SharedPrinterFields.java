@@ -77,7 +77,9 @@ public class SharedPrinterFields {
 	
     public static HashMap<String, Double> lineePagamento = null;
     
-	public static String lastticket = "/bs2coop/pos/LastTicket.out";
+	public static String WorkingFolder = "";
+    
+	public static String lastticket = WorkingFolder+"/"+"LastTicket.out";
 	
 	public static boolean	inRetryFiscal;
 	
@@ -218,8 +220,6 @@ public class SharedPrinterFields {
 		return ejcmd;
 	}
 
-	public static String WorkingFolder = "";
-	
 	private static int myReply = R3define.PRINTER_OK;
 	
 	public static int getMyReply() {

@@ -4761,7 +4761,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			} catch (InterruptedException e) {
 			}
 			
-			System.out.println("getZRepIdAnswer - returning : "+ZRepId);
+			monitorRT.logMRT("getZRepIdAnswer - returning : "+ZRepId);
 			return ZRepId;
 		}
 		

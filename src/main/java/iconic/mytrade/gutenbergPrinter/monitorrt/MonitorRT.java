@@ -34,9 +34,9 @@ import jpos.JposException;
 import jpos.events.DirectIOEvent;
 
 public class MonitorRT extends PrinterCommands {
-	private String TILLSTATUS_XML			= "TillStatus.xml";
-	private String TRANSMISSIONSTATUS_XML	= "TransmissionStatus.xml";
-	private String CHECKDETAILS_XML			= "CheckDetails.xml";
+	private String TILLSTATUS_XML			= SharedPrinterFields.WorkingFolder+"/"+"TillStatus.xml";
+	private String TRANSMISSIONSTATUS_XML	= SharedPrinterFields.WorkingFolder+"/"+"TransmissionStatus.xml";
+	private String CHECKDETAILS_XML			= SharedPrinterFields.WorkingFolder+"/"+"CheckDetails.xml";
 	
 	private boolean INDENTMODE		= true;
 	private boolean OMITDECLARATION	= false;
@@ -99,11 +99,6 @@ public class MonitorRT extends PrinterCommands {
 		if (zrepid != null && zrepid.length() > 0) {
 			
 			GetTransmissionStatus(ipaddress, zreport, printerid, date);
-			
-//			if (isEpsonModel()) {
-//				operation = 2;
-//				GetTransmission(ipaddress, operation, zreport, printerid, date);
-//			}
 			
 		}
 		else {
