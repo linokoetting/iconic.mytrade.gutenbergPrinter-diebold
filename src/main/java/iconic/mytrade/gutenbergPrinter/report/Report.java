@@ -97,17 +97,17 @@ public class Report extends PrinterCommands {
 					break;
 					
 				case INITJOURNAL:
-					do {
+//					do {
 						TakeYourTime.takeYourTime(200);
 						ret = r3InitJournal();
-					} while (ret == 111);
+//					} while (ret == 111);
 					break;
 					
 				default:
 					// debug(  "Report type unknown");
-				break;
+					break;
 			}
-      return;
+			return;
     }
     
 	private static void r3PrintSomeReceiptByDate (String startNum, String endNum)
@@ -347,14 +347,14 @@ public class Report extends PrinterCommands {
 	
     private static int r3InitJournal ()
     {
-    	String obj[] = new String[1];
-    	int data[] = new int[1];
+//    	String obj[] = new String[1];
+//    	int data[] = new int[1];
     	int ret = 0;
     	
-		if (MessageBox.showMessage("INIZIALIZZ. GIORNALE?", MessageBox.YESNO) == MessageBox.NO)
-			return(-1);
+//		if (MessageBox.showMessage("INIZIALIZZ. GIORNALE?", MessageBox.YESNO) == MessageBox.NO)
+//			return(-1);
 
-		MessageBox.showMessage("NotifyInitJournal", null, MessageBox.OK);
+//		MessageBox.showMessage("NotifyInitJournal", null, MessageBox.OK);
 		return ret;
     }
     
