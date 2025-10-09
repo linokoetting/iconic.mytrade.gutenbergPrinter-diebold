@@ -1368,7 +1368,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	}
 
 	public void statusUpdateOccurred(StatusUpdateEvent arg0) {
-		((StatusUpdateListener) fiscalPrinter).statusUpdateOccurred(arg0);
+		//((StatusUpdateListener) fiscalPrinter).statusUpdateOccurred(arg0);
 		
 	}
 
