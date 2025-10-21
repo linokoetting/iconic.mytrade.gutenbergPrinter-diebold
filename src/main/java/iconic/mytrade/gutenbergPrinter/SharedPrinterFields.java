@@ -78,6 +78,7 @@ public class SharedPrinterFields {
     public static HashMap<String, Double> lineePagamento = null;
     
 	public static String WorkingFolder = "";
+	public static String BaseFolder = "";
     
 	public static String FwList = "";
     
