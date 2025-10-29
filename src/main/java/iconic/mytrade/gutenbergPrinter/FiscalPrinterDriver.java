@@ -2539,7 +2539,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		for (int i=0; i<ticket.length; i++) {
 			if ((i<=9) || (i>=ticket.length-4))
 				continue;
-			s = String13Fix.replaceAll(ticket[i], "ﾀ", "euro");
+			s = String13Fix.replaceAll(ticket[i], "ﾀ", SharedPrinterFields.euro);
 			ret.add(s);
 		}
 		return ret;
