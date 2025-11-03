@@ -1363,7 +1363,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		System.out.println ( "MAPOTO-EXEC PRINT SUBTOTAL ADJ "+arg1+" "+arg2 );
 		
-   		fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, "Sconto " + arg1, arg2 / 100);
+   		fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, RTConsts.SCONTO + arg1, arg2 / 100);
 	}
 
 	public void directIO(int i, int data[],  Object o) throws JposException
@@ -2388,7 +2388,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     private String buildItemAdjustment ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
-        String desc = "Sconto "+de;
+        String desc = RTConsts.SCONTO+de;
     	String lo =  ( buildbuild(MAXLNGHOFLENGTH,desc,price ));
     	return ( lo+"-" );
     }
@@ -2396,7 +2396,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     private String buildSubtotalAdjustment ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
-        String desc = "Sconto "+de;
+        String desc = RTConsts.SCONTO+de;
     	String lo =  ( buildbuild(MAXLNGHOFLENGTH,desc,price ));
     	return ( lo+"-" );
     }
@@ -2454,7 +2454,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     private String buildSRTSubtotalAdjustment ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFDISCOUNT();
-        String desc = "Sconto "+de;
+        String desc = RTConsts.SCONTO+de;
     	String lo =  ( buildbuild(MAXLNGHOFLENGTH,desc,price ));
     	return ( lo+"-" );
     }
