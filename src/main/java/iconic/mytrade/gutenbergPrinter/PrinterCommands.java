@@ -1129,10 +1129,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 		    int i = RTConsts.setMAXLNGHOFLENGTH();
 		    
-		    String s1 = String13Fix.replaceAll(arg0,R3define.Lf, "�");
-		    s1 = String13Fix.replaceAll(s1,R3define.Cr, "�");
-		    s1 = String13Fix.replaceAll(s1,"��", "�");
-		    String[] msg = String13Fix.split(s1,"�");
+		    String s1 = String13Fix.replaceAll(arg0,R3define.Lf, String13Fix.REPLACE);
+		    s1 = String13Fix.replaceAll(s1,R3define.Cr, String13Fix.REPLACE);
+		    s1 = String13Fix.replaceAll(s1,String13Fix.REPLACE+String13Fix.REPLACE, String13Fix.REPLACE);
+		    String[] msg = String13Fix.split(s1,String13Fix.REPLACE);
 		    for (int z = 0; z < msg.length; z++)
 		    {
 		    	printNormal_ejoff(jpos.FiscalPrinterConst.FPTR_S_RECEIPT,(msg[z].length() > i) ? msg[z].substring(0, i) : msg[z]);
@@ -1153,9 +1153,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     		staticMsgLen = fiscalPrinterDriver.getMessageLength();
     	i = staticMsgLen;
     	
-	    String s1 = String13Fix.replaceAll(arg0,R3define.Lf, "�");
-	    s1 = String13Fix.replaceAll(s1,R3define.Cr, "�");
-	    s1 = String13Fix.replaceAll(s1,"��", "�");
+	    String s1 = String13Fix.replaceAll(arg0,R3define.Lf, String13Fix.REPLACE);
+	    s1 = String13Fix.replaceAll(s1,R3define.Cr, String13Fix.REPLACE);
+	    s1 = String13Fix.replaceAll(s1,String13Fix.REPLACE+String13Fix.REPLACE, String13Fix.REPLACE);
 
     	s1 = String13Fix.replaceAll(s1, "€", ""+(char)127);
 		
@@ -1183,7 +1183,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		      }
 		}
 		
-	    String[] msg = String13Fix.split(s1,"�");
+	    String[] msg = String13Fix.split(s1,String13Fix.REPLACE);
 	    for (int z = 0; z < msg.length; z++)
 	    {
         	if (msg[z].startsWith(SharedPrinterFields.getCFPIvaTag())) {
@@ -3086,11 +3086,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	      {
 	        case jpos.FiscalPrinterConst.FPTR_PS_NONFISCAL:
 	        	String back36 = "";
-	    	    String s1 = String13Fix.replaceAll(data,"\n", "�");
-	    	    s1 = String13Fix.replaceAll(s1,"\r", "�");
-	    	    s1 = String13Fix.replaceAll(s1,"��", "�");
+	    	    String s1 = String13Fix.replaceAll(data,"\n", String13Fix.REPLACE);
+	    	    s1 = String13Fix.replaceAll(s1,"\r", String13Fix.REPLACE);
+	    	    s1 = String13Fix.replaceAll(s1,String13Fix.REPLACE+String13Fix.REPLACE, String13Fix.REPLACE);
 	    	    s1 = String13Fix.replaceAll(s1, "€", ""+(char)127);
-	    	    String[] data1 = String13Fix.split(s1,"�");
+	    	    String[] data1 = String13Fix.split(s1,String13Fix.REPLACE);
 	    	    for (int z = 0; z < data1.length; z++)
 	    	    {
 	    	    	if (SRTPrinterExtension.isSRT())
