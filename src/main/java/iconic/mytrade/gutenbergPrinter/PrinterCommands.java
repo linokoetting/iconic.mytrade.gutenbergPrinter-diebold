@@ -1347,8 +1347,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return;
 		}
 		
-		printRecSubtotalAdjustment_I(arg0, arg1, arg2);
-		
 		if (isFiscalAndSRTModel())
 		{
 			if (RTTxnType.isVoidTrx())
@@ -1356,6 +1354,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			printScontiByTax(arg0, arg1, arg2);
 			HardTotals.doSubtotalAdjustment(arg2);
 		}
+		else
+			printRecSubtotalAdjustment_I(arg0, arg1, arg2);
 	}
 	
 	private void printRecSubtotalAdjustment_I(int arg0, String arg1, long arg2) throws JposException {
@@ -1448,7 +1448,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					else
 						myDepartment = ""+DicoTaxToPrinter.getFromPoliposToPrinter(Integer.parseInt(vatInOutH.getSwVatCode()));
 					String myDiscountAmount = ""+(int)(Math.rint(value*100));
-					String myDiscountDescription = "Sconto IVA";
+					String myDiscountDescription = SharedPrinterFields.DESCRIZIONE_SCONTO;
 					
 					if (MyTradeProperties.isMergeVatDiscount() && MixedVat(myDepartment)) {
 						valueVI+=value;
