@@ -1336,6 +1336,14 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	}
 
 	public void printRecSubtotalAdjustment(int arg0, String arg1, long arg2) throws JposException {
+		if (arg0 == 0) {
+			// from GutenbergHub
+			
+			printScontiByTax(arg1, arg2);
+			HardTotals.doSubtotalAdjustment(arg2);
+			return;
+		}
+		
 		System.out.println ( "MAPOTO-EXEC PRINT SUBTOTAL ADJUSTMENT" );
 		System.out.println ( "MAPOTO-EXEC PRINT SUBTOTAL ADJUSTMENT - arg0="+arg0 );
 		System.out.println ( "MAPOTO-EXEC PRINT SUBTOTAL ADJUSTMENT - arg1="+arg1 );
@@ -1479,6 +1487,35 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		}
 		else
 			System.out.println("printScontiByTax - SSCO is null");
+	}
+    
+    private void printScontiByTax(String vat, long value) throws JposException
+	{
+		// from GutenbergHub
+		
+		if (SRTPrinterExtension.isPRT()) {
+			if (value > 0.00) {
+				String myDepartment = "";
+				if (Integer.parseInt(vat) == SharedPrinterFields.VAT_N4_Index)
+					myDepartment = SharedPrinterFields.VAT_N4_Dept;
+				else
+					myDepartment = vat;
+				String myDiscountAmount = ""+(int)(Math.rint(value));
+				String myDiscountDescription = SharedPrinterFields.DESCRIZIONE_SCONTO;
+				
+				StringBuffer sbcmd = new StringBuffer("=U/*"+myDepartment+"/$"+myDiscountAmount+"/("+myDiscountDescription+")");
+				System.out.println("printScontiByTax - sbcmd="+sbcmd);
+				fiscalPrinterDriver.executeRTDirectIo(0, 0, sbcmd);
+			}
+		}
+		else if (isFiscalAndSRTModel()) {
+			if (value > 0) {
+				printRecSubtotalAdjustment_I(1, vat, (long)(value*100));
+			}
+		}
+		else {
+			printRecSubtotalAdjustment_I(1, vat, value/100);
+		}
 	}
     
 	public void printRecTotal(long arg0, long arg1, String arg2) throws JposException {
