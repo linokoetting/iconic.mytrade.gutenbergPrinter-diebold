@@ -50,6 +50,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.properties.PaperSavingPrope
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
+import iconic.mytrade.gutenberg.jpos.printer.service.properties.UI;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.XRData;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.RoungickTax;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.VatInOutHandling;
@@ -3499,8 +3500,16 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println ( "stampaBarcodePerResi printing barcode : <"+bc+">");
 			
 			StringBuffer objb = new StringBuffer("");
+			int type = 8;
+			
+			if (UI.isUIActivated()) {
+				bc = bc + SharedPrinterFields.RTPrinterId;
+				System.out.println ( "stampaBarcodePerResi printing qrcode  : <"+bc+">");
+       			type = 11;
+			}
+			
 			objb = new StringBuffer(bc);
-			fiscalPrinterDriver.executeRTDirectIo(5000, 8, objb);
+			fiscalPrinterDriver.executeRTDirectIo(5000, type, objb);
     		
     		SmartTicket.SMTKbarcodes_add(bc);
 		}
@@ -3518,8 +3527,15 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println ( "stampaBarcodePerResi printing barcode : <"+bc+">");
 			
 			StringBuffer objb = new StringBuffer("");
+			int type = 8;
+			
+			if (UI.isUIActivated()) {
+				System.out.println ( "stampaBarcodePerResi printing qrcode  : <"+bc+">");
+       			type = 11;
+			}
+			
 			int[] dt={0};
-			dt[0]=8;
+			dt[0]=type;
 			objb = new StringBuffer(bc);
 			try {
 				this.directIO(5000, dt, objb);
