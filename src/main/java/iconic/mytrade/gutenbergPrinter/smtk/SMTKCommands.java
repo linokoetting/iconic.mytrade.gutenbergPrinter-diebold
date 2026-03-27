@@ -112,7 +112,7 @@ public class SMTKCommands extends PrinterCommands {
 		    	if (PdfFilename != null && PdfFilename.length() > 0)
 		    	{
 			    	System.out.println("SMTK - PdfFilename="+PdfFilename);
-			    	String XmlFilename = buildXmlFilename(PdfFilename);
+			    	String XmlFilename = SharedPrinterFields.WorkingFolder + "/" + buildXmlFilename(PdfFilename);
 			    	System.out.println("SMTK - XmlFilename="+XmlFilename);
 			    	
 					StringTokenizer st = new StringTokenizer(PdfFilename, ".");
@@ -216,6 +216,9 @@ public class SMTKCommands extends PrinterCommands {
 	private static void moveSmartTicket(String sourcefile, String subfolder, int transactionnumber, String extension, int receiptnumber, boolean voiding)
 	{
 		boolean ret = true;
+		
+		if (extension.equalsIgnoreCase("pdf"))
+			sourcefile = SharedPrinterFields.WorkingFolder + "/" + sourcefile;
 		
 		boolean clean = receiptnumber == 1;
 		
