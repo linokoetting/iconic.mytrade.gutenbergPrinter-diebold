@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import iconic.mytrade.gutenberg.jpos.printer.service.LastTicket;
 import iconic.mytrade.gutenberg.jpos.printer.service.PosApp;
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
@@ -48,11 +49,11 @@ public class SMTKCommands extends PrinterCommands {
 			// il file LastTicket.out viene già fatto normalmente
 		}
 		
-		String toEncode = SharedPrinterFields.lastticket;
+		String toEncode = LastTicket.getLastticket();
 		String Encoded = rtsTrxBuilder.storerecallticket.Default.getsourcePath()+"LastTicket.b64";
 		String Decoded = "";
 		if ((SmartTicket.getBase64_Decode() != null) && (SmartTicket.getBase64_Decode().length() > 0))
-			Decoded = SmartTicket.getBase64_Decode()+"/"+SharedPrinterFields.lastticket.substring(SharedPrinterFields.lastticket.lastIndexOf("/")+1);
+			Decoded = SmartTicket.getBase64_Decode()+"/"+LastTicket.getLastticket().substring(LastTicket.getLastticket().lastIndexOf("/")+1);
 		try {
 			Base64.Encode(toEncode, Encoded, Decoded);
 		} catch (IOException e) {
@@ -95,7 +96,7 @@ public class SMTKCommands extends PrinterCommands {
 	        }
 	        else
 	        {
-	        	textfile = readFile(SharedPrinterFields.lastticket, true);
+	        	textfile = readFile(LastTicket.getLastticket(), true);
 	        }
 	        
 	    	System.out.println("SMTK - data="+date[0]);
@@ -148,13 +149,13 @@ public class SMTKCommands extends PrinterCommands {
 		{
 			// il file LastTicket.out viene già fatto normalmente
 			
-        	String textfile = readFile(SharedPrinterFields.lastticket, false);
+        	String textfile = readFile(LastTicket.getLastticket(), false);
 	        
-			String toEncode = SharedPrinterFields.lastticket;
+			String toEncode = LastTicket.getLastticket();
 			String Encoded = rtsTrxBuilder.storerecallticket.Default.getsourcePath()+"LastTicket.b64";
 			String Decoded = "";
 			if ((SmartTicket.getBase64_Decode() != null) && (SmartTicket.getBase64_Decode().length() > 0))
-				Decoded = SmartTicket.getBase64_Decode()+"/"+SharedPrinterFields.lastticket.substring(SharedPrinterFields.lastticket.lastIndexOf("/")+1);
+				Decoded = SmartTicket.getBase64_Decode()+"/"+LastTicket.getLastticket().substring(LastTicket.getLastticket().lastIndexOf("/")+1);
 			try {
 				Base64.Encode(toEncode, Encoded, Decoded);
 			} catch (IOException e) {
