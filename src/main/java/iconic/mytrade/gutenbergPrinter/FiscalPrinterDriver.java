@@ -240,10 +240,10 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		setRTModel(SRTPrinterExtension.isPRT());
 		setSRTModel(SRTPrinterExtension.isSRT());
 		
-		if (isSRTModel() || isRTModel())
-		{
+//		if (isSRTModel() || isRTModel())
+//		{
 			HardTotals.init();
-		}
+//		}
 		
 		PrinterInfo.SavePrinterInfo("Model", ""+PrinterModel);
 		
@@ -310,10 +310,10 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 			System.out.println ("RetailCube-R3printers RT Model                 <"+isRTModel()+">");
 			System.out.println ("RetailCube-R3printers Like Non Fiscal Mode     <"+SRTPrinterExtension.isLikeNonFiscalMode()+">");
 			
-			if (isSRTModel() || isRTModel())
-			{
+//			if (isSRTModel() || isRTModel())
+//			{
 				HardTotals.init();
-			}
+//			}
 		}
 		
 	    if (isRTModel())
