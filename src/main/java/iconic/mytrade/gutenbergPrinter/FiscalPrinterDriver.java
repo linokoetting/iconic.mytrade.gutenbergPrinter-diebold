@@ -2647,7 +2647,8 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 				   System.out.println("getVATTableEntry - s = "+s);
 				   String aliquota = s.substring(1, 4);
 				   String rate = s.substring(4, 8);
-				   if ((Integer.parseInt(rate) < 100) && (Integer.parseInt(rate) > 0)) {
+				   int type = Integer.parseInt(s.substring(8, 9));
+				   if ((type != 1) && (Integer.parseInt(rate) < 100) && (Integer.parseInt(rate) > 0)) {
 					   ret = Integer.parseInt(aliquota);
 					   break;
 				   }
